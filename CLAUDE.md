@@ -2,6 +2,11 @@
 
 Guidance for working in this repo. Read this before making changes.
 
+> **Why we build the way we do:** [`game-principles.md`](./game-principles.md) is
+> the product north star — the child-psychology and behaviour-analysis reasoning
+> behind the conventions below. Read it before designing a game or a UX change;
+> `CLAUDE.md` is *how*, `game-principles.md` is *why*.
+
 ## Product
 
 Open-access (**no login**) browser games that help **kids aged 5–10** build four

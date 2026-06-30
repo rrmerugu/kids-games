@@ -5,6 +5,7 @@ import { SettingsScreen } from './screens/SettingsScreen.js';
 import { ParentDashboard } from './screens/ParentDashboard.js';
 import { GameRoute } from './games/GameRoute.js';
 import { VersionBadge } from './components/VersionBadge.js';
+import { TapRipple } from './components/TapRipple.js';
 import { useApplyTheme } from './theme.js';
 
 export function App(): React.JSX.Element {
@@ -19,6 +20,7 @@ export function App(): React.JSX.Element {
         <Route path="/play/:gameId/:level" element={<GameRoute />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <TapRipple />
       <VersionBadge />
     </BrowserRouter>
   );

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@invana/ui';
 import { AppShell, GameTile } from '@kids/ui';
+import { GlossyIconButton } from '../components/GlossyIconButton.js';
 import { levelCount, totalStars } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { GAMES } from '../games/registry.js';
@@ -20,46 +20,25 @@ export function HomeScreen(): React.JSX.Element {
           <div className="flex flex-col leading-tight">
             <h1 className="text-2xl font-extrabold">Kids Games 🧠</h1>
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-              by a Dad ❤️
+              built for kids, and for parents to learn about their kid's abilities
             </span>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="secondary"
-              size="lg"
-              className="h-12 w-12 rounded-full p-0 text-2xl"
-              aria-label="Toggle sound"
-              onClick={() => setSetting('sound', !sound)}
-            >
+            <GlossyIconButton label="Toggle sound" onClick={() => setSetting('sound', !sound)}>
               {sound ? '🔊' : '🔈'}
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="h-12 w-12 rounded-full p-0 text-2xl"
-              aria-label="Toggle theme"
+            </GlossyIconButton>
+            <GlossyIconButton
+              label="Toggle theme"
               onClick={() => setSetting('theme', resolvedTheme === 'dark' ? 'light' : 'dark')}
             >
               {resolvedTheme === 'dark' ? '☀️' : '🌙'}
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="h-12 w-12 rounded-full p-0 text-2xl"
-              aria-label="Parent dashboard"
-              onClick={() => navigate('/parent')}
-            >
+            </GlossyIconButton>
+            <GlossyIconButton label="Parent dashboard" onClick={() => navigate('/parent')}>
               📊
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="h-12 w-12 rounded-full p-0 text-2xl"
-              aria-label="Settings"
-              onClick={() => navigate('/settings')}
-            >
+            </GlossyIconButton>
+            <GlossyIconButton label="Settings" onClick={() => navigate('/settings')}>
               ⚙️
-            </Button>
+            </GlossyIconButton>
           </div>
         </>
       }

@@ -25,10 +25,14 @@ export function useResolvedTheme(): 'light' | 'dark' {
   return theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
 }
 
-/** Apply the resolved theme by toggling the `dark` class on <html>. */
+/** Apply the resolved theme + motion preference as classes on <html>. */
 export function useApplyTheme(): void {
   const resolved = useResolvedTheme();
+  const reducedMotion = useProgress((s) => s.settings.reducedMotion);
   useEffect(() => {
     document.documentElement.classList.toggle('dark', resolved === 'dark');
   }, [resolved]);
+  useEffect(() => {
+    document.documentElement.classList.toggle('reduce-motion', reducedMotion);
+  }, [reducedMotion]);
 }

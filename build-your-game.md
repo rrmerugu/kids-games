@@ -10,7 +10,9 @@ Claude Code)**, and the **PR standards** to follow before raising a pull request
 
 > The deeper engineering conventions live in [`CLAUDE.md`](./CLAUDE.md) — please read
 > it before changing anything. This file is the friendly on-ramp; `CLAUDE.md` is the
-> source of truth for the architecture.
+> source of truth for the architecture; and [`game-principles.md`](./game-principles.md)
+> explains *why* we design games the way we do (child psychology + behaviour
+> analysis). Read it before designing a new game.
 
 ---
 

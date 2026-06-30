@@ -58,3 +58,95 @@ body {
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Whole-screen tap ripple (TapRipple): concentric rings expand from the touch
+   point so every tap feels acknowledged. Rings inherit `currentColor`. */
+.tap-ripple {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.tap-ripple-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 28px;
+  width: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: tap-ripple 650ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes tap-ripple {
+  0% {
+    transform: scale(0.25);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Springy press feedback on every click/tap target — buttons, links, and
+   anything with a button role or pointer cursor briefly shrink while active,
+   so the whole app feels tappable and responsive for little hands. */
+button,
+a,
+[role="button"],
+.cursor-pointer {
+  transition:
+    transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 120ms ease;
+  touch-action: manipulation;
+}
+
+button:active,
+a:active,
+[role="button"]:active,
+.cursor-pointer:active {
+  transform: scale(0.92);
+  filter: brightness(0.97);
+}
+
+button:disabled:active,
+[role="button"][aria-disabled="true"]:active {
+  transform: none;
+  filter: none;
+}
+
+/* Respect the "Less motion 🐢" setting (adds `.reduce-motion` on <html>) and
+   the OS reduced-motion preference: keep targets static. */
+.reduce-motion button,
+.reduce-motion a,
+.reduce-motion [role="button"],
+.reduce-motion .cursor-pointer {
+  transition: none;
+}
+
+.reduce-motion button:active,
+.reduce-motion a:active,
+.reduce-motion [role="button"]:active,
+.reduce-motion .cursor-pointer:active {
+  transform: none;
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button,
+  a,
+  [role="button"],
+  .cursor-pointer {
+    transition: none;
+  }
+
+  button:active,
+  a:active,
+  [role="button"]:active,
+  .cursor-pointer:active {
+    transform: none;
+    filter: none;
+  }
+}
