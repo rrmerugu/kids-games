@@ -1,6 +1,6 @@
 {
   "name": "@kids/game-core",
-  "version": "2026.07.01.3",
+  "version": "2026.07.01.4",
   "private": true,
   "type": "module",
   "exports": {
