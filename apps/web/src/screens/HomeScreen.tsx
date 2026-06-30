@@ -63,23 +63,59 @@ export function HomeScreen(): React.JSX.Element {
           </div>
         </>
       }
+      footer={
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-1 text-center text-xs text-slate-500 dark:text-slate-400">
+          <p>
+            <a
+              className="font-semibold underline decoration-dotted underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200"
+              href="https://github.com/rrmerugu/kids-games/blob/main/LICENSE"
+              target="_blank"
+              rel="noreferrer"
+            >
+              MIT License
+            </a>
+            {' · '}
+            <a
+              className="font-semibold underline decoration-dotted underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200"
+              href="https://github.com/rrmerugu/kids-games/blob/main/build-your-game.md"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Build your game
+            </a>
+          </p>
+        </div>
+      }
     >
-      <div className="mx-auto grid h-full max-w-3xl grid-cols-1 content-center gap-6 p-6 sm:grid-cols-3">
-        {GAMES.map((g) => {
-          const best = bestStars[g.id] ?? {};
-          const max = 3 * levelCount(g.id);
-          const progress = max ? (totalStars(best) / max) * 100 : 0;
-          return (
-            <GameTile
-              key={g.id}
-              emoji={g.emoji}
-              label={g.label}
-              color={g.color}
-              progress={progress}
-              onClick={() => navigate(`/play/${g.id}`)}
-            />
-          );
-        })}
+      <div className="relative mx-auto flex h-full max-w-3xl flex-col justify-center gap-8 p-6">
+        <header className="text-center">
+          <h2 className="text-4xl font-extrabold sm:text-2xl">
+            Self-hosted games for kids with analytics for parents
+          </h2>
+          <p className="my-4 text-2xl font-semibold text-slate-500 dark:text-slate-400">
+            focus, practise and repeat
+          </p>
+        </header>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          {GAMES.map((g) => {
+            const best = bestStars[g.id] ?? {};
+            const max = 3 * levelCount(g.id);
+            const progress = max ? (totalStars(best) / max) * 100 : 0;
+            return (
+              <GameTile
+                key={g.id}
+                emoji={g.emoji}
+                label={g.label}
+                color={g.color}
+                progress={progress}
+                onClick={() => navigate(`/play/${g.id}`)}
+              />
+            );
+          })}
+        </div>
+        <span className="absolute bottom-2 left-2 text-xs text-slate-400 dark:text-slate-600">
+          v{__APP_VERSION__}
+        </span>
       </div>
     </AppShell>
   );

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { version } from './package.json';
 
 // GitHub Pages serves this project site under /<repo>/, so production assets must
 // be rooted there; dev/preview stays at root. BrowserRouter reads this via
@@ -9,6 +10,7 @@ const REPO_BASE = '/kids-games/';
 
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? REPO_BASE : '/',
+  define: { __APP_VERSION__: JSON.stringify(version) },
   plugins: [react(), tailwindcss()],
   server: { port: 5173 },
 }));
