@@ -49,8 +49,12 @@ jobs:
       - name: Add SPA fallback
         run: cp apps/web/dist/index.html apps/web/dist/404.html
 
+      # enablement: true turns Pages on (build type = GitHub Actions) the first
+      # time, so no manual Settings → Pages step is needed.
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
