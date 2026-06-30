@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "@invana/ui/styles.css";
+
+/* Tailwind v4 ignores node_modules by default; the linked workspace UI package
+   lives under node_modules/@kids/ui, so point the scanner at its source. */
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}

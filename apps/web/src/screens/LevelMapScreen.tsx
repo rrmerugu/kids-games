@@ -1,0 +1,69 @@
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Button, cn } from '@invana/ui';
+import { AppShell, StarRating } from '@kids/ui';
+import { isUnlocked, levelCount } from '@kids/gamification';
+import { useProgress } from '@kids/storage';
+import { gameMeta } from '../games/registry.js';
+
+export function LevelMapScreen(): React.JSX.Element {
+  const { gameId } = useParams();
+  const navigate = useNavigate();
+  const meta = gameMeta(gameId);
+  const best = useProgress((s) => (meta ? (s.bestStars[meta.id] ?? {}) : {}));
+
+  if (!meta) return <Navigate to="/" replace />;
+  const count = levelCount(meta.id);
+
+  return (
+    <AppShell
+      header={
+        <>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="h-12 w-12 rounded-full p-0 text-2xl"
+            aria-label="Back"
+            onClick={() => navigate('/')}
+          >
+            ⬅️
+          </Button>
+          <h1 className="text-2xl font-extrabold">
+            {meta.emoji} {meta.label}
+          </h1>
+          <span className="w-12" />
+        </>
+      }
+    >
+      <div className="mx-auto grid max-w-2xl grid-cols-3 gap-5 p-6 sm:grid-cols-4">
+        {Array.from({ length: count }, (_, i) => {
+          const level = i + 1;
+          const unlocked = isUnlocked(level, best);
+          const stars = best[level] ?? 0;
+          return (
+            <button
+              key={level}
+              type="button"
+              disabled={!unlocked}
+              onClick={() => navigate(`/play/${meta.id}/${level}`)}
+              className={cn(
+                'flex aspect-square flex-col items-center justify-center gap-1 rounded-2xl text-3xl font-extrabold shadow-md transition',
+                unlocked
+                  ? 'bg-white text-indigo-600 hover:scale-105 active:scale-95'
+                  : 'cursor-not-allowed bg-slate-200 text-slate-400',
+              )}
+            >
+              {unlocked ? (
+                <>
+                  <span>{level}</span>
+                  <StarRating value={stars} size="sm" />
+                </>
+              ) : (
+                '🔒'
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </AppShell>
+  );
+}
