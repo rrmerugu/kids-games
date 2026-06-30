@@ -171,7 +171,8 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         idleMessage="Press the letter you see! ⌨️"
         hud={
           <GameHud
-            title={`⌨️ Level ${level}`}
+            gameName="⌨️ Letters"
+            title={`Level ${level}`}
             onBack={() => navigate('/play/keyboard')}
             onRestart={() => restartRef.current()}
             nav={<NavIcons />}

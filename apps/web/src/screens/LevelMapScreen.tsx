@@ -1,6 +1,7 @@
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { Button, cn } from '@invana/ui';
+import { cn } from '@invana/ui';
 import { AppShell, StarRating } from '@kids/ui';
+import { NavIcons } from '../components/NavIcons.js';
 import { isUnlocked, levelCount } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { gameMeta } from '../games/registry.js';
@@ -18,23 +19,14 @@ export function LevelMapScreen(): React.JSX.Element {
     <AppShell
       header={
         <>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="h-12 w-12 rounded-full p-0 text-2xl"
-            aria-label="Back"
-            onClick={() => navigate('/')}
-          >
-            ⬅️
-          </Button>
           <h1 className="text-2xl font-extrabold">
             {meta.emoji} {meta.label}
           </h1>
-          <span className="w-12" />
+          <NavIcons />
         </>
       }
     >
-      <div className="mx-auto grid max-w-2xl grid-cols-3 gap-5 p-6 sm:grid-cols-4">
+      <div className="mx-auto grid h-full max-w-2xl content-center grid-cols-3 gap-5 p-6 sm:grid-cols-4">
         {Array.from({ length: count }, (_, i) => {
           const level = i + 1;
           const unlocked = isUnlocked(level, best);

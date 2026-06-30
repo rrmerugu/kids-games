@@ -236,7 +236,8 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         }
         hud={
           <GameHud
-            title={`🎵 Level ${level}`}
+            gameName="🎵 Colors"
+            title={`Level ${level}`}
             onBack={() => navigate('/play/simon')}
             onRestart={() => restartRef.current()}
             nav={<NavIcons />}

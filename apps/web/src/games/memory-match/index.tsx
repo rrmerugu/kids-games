@@ -240,7 +240,8 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
         idleMessage="Find the matching pairs! 🐾"
         hud={
           <GameHud
-            title={`🐶 Level ${level}`}
+            gameName="🐶 Match"
+            title={`Level ${level}`}
             onBack={() => navigate('/play/memory-match')}
             onRestart={() => restartRef.current()}
             nav={<NavIcons />}

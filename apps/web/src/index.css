@@ -59,37 +59,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Whole-screen tap ripple (TapRipple): concentric rings expand from the touch
-   point so every tap feels acknowledged. Rings inherit `currentColor`. */
-.tap-ripple {
-  position: absolute;
-  transform: translate(-50%, -50%);
-}
-
-.tap-ripple-ring {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 28px;
-  width: 28px;
-  margin: -14px 0 0 -14px;
-  border-radius: 9999px;
-  border: 2px solid currentColor;
-  opacity: 0;
-  animation: tap-ripple 650ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-}
-
-@keyframes tap-ripple {
-  0% {
-    transform: scale(0.25);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(4);
-    opacity: 0;
-  }
-}
-
 /* Springy press feedback on every click/tap target — buttons, links, and
    anything with a button role or pointer cursor briefly shrink while active,
    so the whole app feels tappable and responsive for little hands. */
