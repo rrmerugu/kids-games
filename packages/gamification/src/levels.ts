@@ -11,6 +11,9 @@ import {
   LETTERS_EASY,
   LETTERS_FULL,
   LETTERS_MID,
+  WORDS_EASY,
+  WORDS_HARD,
+  WORDS_MID,
 } from './content.js';
 
 export interface MemoryMatchLevel {
@@ -28,7 +31,17 @@ export interface KeyboardLevel {
   targets: number;
   alphabet: readonly string[];
 }
-export type LevelDef = MemoryMatchLevel | SimonLevel | KeyboardLevel;
+export interface WordTypingLevel {
+  kind: 'word-typing';
+  /** How many words to clear the round. */
+  targets: number;
+  words: readonly string[];
+}
+export type LevelDef =
+  | MemoryMatchLevel
+  | SimonLevel
+  | KeyboardLevel
+  | WordTypingLevel;
 
 /** All levels per game, in order. Index 0 = level 1. */
 export const LEVELS: Record<GameId, readonly LevelDef[]> = {
@@ -42,6 +55,11 @@ export const LEVELS: Record<GameId, readonly LevelDef[]> = {
     { kind: 'keyboard', targets: 5, alphabet: LETTERS_EASY },
     { kind: 'keyboard', targets: 8, alphabet: LETTERS_MID },
     { kind: 'keyboard', targets: 10, alphabet: LETTERS_FULL },
+  ],
+  'word-typing': [
+    { kind: 'word-typing', targets: 3, words: WORDS_EASY },
+    { kind: 'word-typing', targets: 4, words: WORDS_MID },
+    { kind: 'word-typing', targets: 5, words: WORDS_HARD },
   ],
 };
 

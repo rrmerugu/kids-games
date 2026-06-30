@@ -64,6 +64,11 @@ export function speakLetter(letter: string): void {
   speak(`Press ${letter}`, 1.1, 0.95);
 }
 
+/** Read out a whole word so a pre-reader knows what to spell, e.g. "Cat". */
+export function speakWord(word: string): void {
+  speak(word, 1.1, 0.9);
+}
+
 /** "Watch!" — the game is taking its turn (e.g. flashing a sequence). */
 export function speakWatch(): void {
   speak('Watch!', 1.1, 1.0);

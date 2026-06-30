@@ -1,5 +1,5 @@
-/** The three pilot games. */
-export type GameId = 'memory-match' | 'simon' | 'keyboard';
+/** The playable games. */
+export type GameId = 'memory-match' | 'simon' | 'keyboard' | 'word-typing';
 
 /**
  * Outcome of one finished round, handed to the gamification layer to compute

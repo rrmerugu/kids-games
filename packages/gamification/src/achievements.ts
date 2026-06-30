@@ -18,6 +18,7 @@ export const STICKERS: readonly Sticker[] = [
   { id: 'perfect-memory', emoji: '🧠', label: 'Perfect Memory' },
   { id: 'super-simon', emoji: '🎵', label: 'Super Simon' },
   { id: 'speedy-keys', emoji: '⌨️', label: 'Speedy Keys' },
+  { id: 'word-wizard', emoji: '📝', label: 'Word Wizard' },
 ];
 
 export function stickerById(id: string): Sticker | undefined {
@@ -42,6 +43,7 @@ export function newlyEarned(
     if (result.gameId === 'memory-match') award('perfect-memory');
     if (result.gameId === 'simon') award('super-simon');
     if (result.gameId === 'keyboard') award('speedy-keys');
+    if (result.gameId === 'word-typing') award('word-wizard');
   }
   return earned;
 }

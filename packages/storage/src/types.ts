@@ -48,7 +48,7 @@ export const DEFAULT_PROGRESS: ProgressData = {
     buddyPosition: 'right',
     theme: 'system',
   },
-  bestStars: { 'memory-match': {}, simon: {}, keyboard: {} },
+  bestStars: { 'memory-match': {}, simon: {}, keyboard: {}, 'word-typing': {} },
   stickers: [],
   sessions: [],
   gamesStarted: 0,

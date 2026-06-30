@@ -7,6 +7,7 @@
  * - memory-match: `mismatches`, `pairs`
  * - simon:        `replays` (times the sequence was re-shown)
  * - keyboard:     `misses`, `targets`
+ * - word-typing:  `misses`, `letters` (total letters typed across the round)
  */
 import type { RoundResult } from '@kids/game-core';
 
@@ -34,6 +35,13 @@ export function starsFor(result: RoundResult): Stars {
       const targets = result.metrics.targets ?? 1;
       if (misses === 0) return 3;
       if (misses <= Math.ceil(targets / 2)) return 2;
+      return 1;
+    }
+    case 'word-typing': {
+      const misses = result.metrics.misses ?? 0;
+      const letters = result.metrics.letters ?? 1;
+      if (misses === 0) return 3;
+      if (misses <= Math.ceil(letters / 3)) return 2;
       return 1;
     }
   }
