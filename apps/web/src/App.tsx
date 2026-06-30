@@ -9,7 +9,7 @@ import { useApplyTheme } from './theme.js';
 export function App(): React.JSX.Element {
   useApplyTheme();
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<HomeScreen />} />
         <Route path="/settings" element={<SettingsScreen />} />
