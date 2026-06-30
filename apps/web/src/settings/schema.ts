@@ -13,4 +13,24 @@ export const SETTINGS_FIELDS: FieldConfig[] = [
       { label: 'High contrast', value: 'colorblind' },
     ],
   },
+  {
+    name: 'theme',
+    type: 'select',
+    label: 'Theme 🌗',
+    options: [
+      { label: 'System', value: 'system' },
+      { label: 'Light', value: 'light' },
+      { label: 'Dark', value: 'dark' },
+    ],
+  },
+  {
+    name: 'buddyPosition',
+    type: 'select',
+    label: 'Buddy 🐻',
+    options: [
+      { label: 'Right side', value: 'right' },
+      { label: 'Left side', value: 'left' },
+      { label: 'Hidden', value: 'off' },
+    ],
+  },
 ];

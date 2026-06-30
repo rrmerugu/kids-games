@@ -1,8 +1,16 @@
 import { useCallback, useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Badge } from '@invana/ui';
-import { AppShell, GameHud, ResultDialog } from '@kids/ui';
-import { GameCanvas, type GameBoard, playHit, playWin, playWrong } from '@kids/game-engine';
+import { AppShell, GameHud, GameLayout, ResultDialog, Stopwatch, useFeedback } from '@kids/ui';
+import {
+  GameCanvas,
+  type GameBoard,
+  playError,
+  playSuccess,
+  playWin,
+  speakLetter,
+  stopSpeech,
+} from '@kids/game-engine';
 import {
   createKeyboardState,
   currentTarget,
@@ -17,6 +25,7 @@ import { useProgress } from '@kids/storage';
 interface Result {
   won: boolean;
   stars: number;
+  durationMs: number;
   newStickers: string[];
 }
 
@@ -25,13 +34,18 @@ const TARGET_FILL = 0x38bdf8;
 export function KeyboardScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
   const def = getLevel('keyboard', level) as KeyboardLevel | undefined;
+  const settings = useProgress((s) => s.settings);
+  const { feedback, cheer, retry, help, hint, clear } = useFeedback();
 
   const [result, setResult] = useState<Result | null>(null);
   const [hud, setHud] = useState({ index: 0, targets: def?.targets ?? 0 });
+  const [roundNonce, setRoundNonce] = useState(0);
 
   const stateRef = useRef<KeyboardState | null>(null);
   const startRef = useRef(0);
+  const hintsRef = useRef(0);
   const restartRef = useRef<() => void>(() => {});
+  const helpRef = useRef<() => void>(() => {});
 
   const handleReady = useCallback(
     (board: GameBoard) => {
@@ -43,6 +57,9 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         });
 
       const setup = (): void => {
+        clear();
+        hintsRef.current = 0;
+        useProgress.getState().markGameStarted();
         const seed = (Date.now() ^ (level * 0xc2b2ae35)) >>> 0;
         const state = createKeyboardState(
           { alphabet: def.alphabet, targets: def.targets },
@@ -70,12 +87,18 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
           level,
           won: true,
           durationMs: performance.now() - startRef.current,
-          metrics: { misses: s.misses, targets: def.targets },
+          metrics: { misses: s.misses, targets: def.targets, hints: hintsRef.current },
         };
         const { sound } = useProgress.getState().settings;
         const outcome = useProgress.getState().recordRound(round);
+        cheer();
         if (sound) playWin();
-        setResult({ won: true, stars: outcome.stars, newStickers: outcome.newStickers });
+        setResult({
+          won: true,
+          stars: outcome.stars,
+          durationMs: round.durationMs,
+          newStickers: outcome.newStickers,
+        });
       };
 
       const handleKey = (e: KeyboardEvent): void => {
@@ -88,11 +111,12 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         const { sound } = useProgress.getState().settings;
 
         if (out.kind === 'miss') {
-          if (sound) playWrong();
+          retry();
+          if (sound) playError();
           board.shake('target');
           return;
         }
-        if (sound) playHit();
+        if (sound) playSuccess();
         if (!useProgress.getState().settings.reducedMotion) board.pulse('target');
         setHud((h) => ({ ...h, index: out.state.index }));
 
@@ -106,14 +130,31 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
 
       restartRef.current = () => {
         setResult(null);
+        setRoundNonce((n) => n + 1);
         setup();
+      };
+
+      // Ask Buddy for help → log it, say the letter to press, and pulse it.
+      helpRef.current = () => {
+        help();
+        hintsRef.current += 1;
+        const s = stateRef.current;
+        if (!s || s.phase !== 'input') return;
+        const target = currentTarget(s);
+        if (!target) return;
+        hint(`Press the ${target} key! 👇`);
+        if (useProgress.getState().settings.sound) speakLetter(target);
+        if (!useProgress.getState().settings.reducedMotion) board.pulse('target');
       };
 
       setup();
       window.addEventListener('keydown', handleKey);
-      return () => window.removeEventListener('keydown', handleKey);
+      return () => {
+        window.removeEventListener('keydown', handleKey);
+        stopSpeech();
+      };
     },
-    [def, level],
+    [def, level, cheer, retry, help, hint, clear],
   );
 
   if (!def) return <Navigate to="/" replace />;
@@ -121,20 +162,32 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
 
   return (
     <AppShell>
-      <GameCanvas onReady={handleReady} backgroundColor={0x0c4a6e} />
-      <GameHud
-        title={`⌨️ Level ${level}`}
-        onBack={() => navigate('/play/keyboard')}
-        onRestart={() => restartRef.current()}
+      <GameLayout
+        side={settings.buddyPosition}
+        feedback={feedback}
+        reducedMotion={settings.reducedMotion}
+        onHelp={() => helpRef.current()}
+        idleMessage="Press the letter you see! ⌨️"
+        hud={
+          <GameHud
+            title={`⌨️ Level ${level}`}
+            onBack={() => navigate('/play/keyboard')}
+            onRestart={() => restartRef.current()}
+          >
+            <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
+              {hud.index}/{hud.targets}
+            </Badge>
+            <Stopwatch resetSignal={roundNonce} />
+          </GameHud>
+        }
       >
-        <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
-          {hud.index}/{hud.targets}
-        </Badge>
-      </GameHud>
+        <GameCanvas onReady={handleReady} />
+      </GameLayout>
       <ResultDialog
         open={result !== null}
         won={result?.won ?? false}
         stars={result?.stars ?? 0}
+        durationMs={result?.durationMs}
         newStickers={result?.newStickers ?? []}
         onPlayAgain={() => restartRef.current()}
         onNext={next ? () => navigate(`/play/keyboard/${next}`) : undefined}

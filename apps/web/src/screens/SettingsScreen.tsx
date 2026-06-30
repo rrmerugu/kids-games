@@ -1,8 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent } from '@invana/ui';
-import { AppShell, JsonForm } from '@kids/ui';
-import { useProgress } from '@kids/storage';
+import { AppShell, BuddyPanel, JsonForm } from '@kids/ui';
+import { useProgress, type BuddyPosition, type ThemeMode } from '@kids/storage';
 import { SETTINGS_FIELDS } from '../settings/schema.js';
+
+const BUDDY_POSITIONS: readonly BuddyPosition[] = ['right', 'left', 'off'];
+const THEMES: readonly ThemeMode[] = ['system', 'light', 'dark'];
+
+function toBuddyPosition(value: unknown): BuddyPosition {
+  return BUDDY_POSITIONS.includes(value as BuddyPosition) ? (value as BuddyPosition) : 'right';
+}
+
+function toTheme(value: unknown): ThemeMode {
+  return THEMES.includes(value as ThemeMode) ? (value as ThemeMode) : 'system';
+}
 
 export function SettingsScreen(): React.JSX.Element {
   const navigate = useNavigate();
@@ -37,10 +48,21 @@ export function SettingsScreen(): React.JSX.Element {
                 setSetting('sound', Boolean(v.sound));
                 setSetting('reducedMotion', Boolean(v.reducedMotion));
                 setSetting('palette', v.palette === 'colorblind' ? 'colorblind' : 'classic');
+                setSetting('buddyPosition', toBuddyPosition(v.buddyPosition));
+                setSetting('theme', toTheme(v.theme));
               }}
             />
           </CardContent>
         </Card>
+
+        {settings.buddyPosition !== 'off' && (
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+              Say hi to Buddy 👋
+            </span>
+            <BuddyPanel className="h-56 w-full rounded-3xl" reducedMotion={settings.reducedMotion} />
+          </div>
+        )}
       </div>
     </AppShell>
   );

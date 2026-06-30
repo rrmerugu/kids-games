@@ -4,18 +4,25 @@ import { AppShell, GameTile } from '@kids/ui';
 import { levelCount, totalStars } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { GAMES } from '../games/registry.js';
+import { useResolvedTheme } from '../theme.js';
 
 export function HomeScreen(): React.JSX.Element {
   const navigate = useNavigate();
   const bestStars = useProgress((s) => s.bestStars);
   const sound = useProgress((s) => s.settings.sound);
   const setSetting = useProgress((s) => s.setSetting);
+  const resolvedTheme = useResolvedTheme();
 
   return (
     <AppShell
       header={
         <>
-          <h1 className="text-2xl font-extrabold">Brain Games 🧠</h1>
+          <div className="flex flex-col leading-tight">
+            <h1 className="text-2xl font-extrabold">Kids Games 🧠</h1>
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+              by a Dad ❤️
+            </span>
+          </div>
           <div className="flex gap-2">
             <Button
               variant="secondary"
@@ -25,6 +32,24 @@ export function HomeScreen(): React.JSX.Element {
               onClick={() => setSetting('sound', !sound)}
             >
               {sound ? '🔊' : '🔈'}
+            </Button>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="h-12 w-12 rounded-full p-0 text-2xl"
+              aria-label="Toggle theme"
+              onClick={() => setSetting('theme', resolvedTheme === 'dark' ? 'light' : 'dark')}
+            >
+              {resolvedTheme === 'dark' ? '☀️' : '🌙'}
+            </Button>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="h-12 w-12 rounded-full p-0 text-2xl"
+              aria-label="Parent dashboard"
+              onClick={() => navigate('/parent')}
+            >
+              📊
             </Button>
             <Button
               variant="secondary"

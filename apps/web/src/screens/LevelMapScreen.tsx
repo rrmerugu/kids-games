@@ -48,8 +48,8 @@ export function LevelMapScreen(): React.JSX.Element {
               className={cn(
                 'flex aspect-square flex-col items-center justify-center gap-1 rounded-2xl text-3xl font-extrabold shadow-md transition',
                 unlocked
-                  ? 'bg-white text-indigo-600 hover:scale-105 active:scale-95'
-                  : 'cursor-not-allowed bg-slate-200 text-slate-400',
+                  ? 'bg-white text-indigo-600 hover:scale-105 active:scale-95 dark:bg-slate-700 dark:text-indigo-200'
+                  : 'cursor-not-allowed bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-600',
               )}
             >
               {unlocked ? (

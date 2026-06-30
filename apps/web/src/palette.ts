@@ -11,3 +11,9 @@ export function padColors(palette: GameSettings['palette']): readonly number[] {
 /** Memory Match card back colour. */
 export const CARD_BACK = 0x6366f1;
 export const CARD_FACE = 0xffffff;
+
+/** Card border colours: idle (white), correct (green), wrong (red). */
+export const BORDER_IDLE = 0xffffff;
+export const BORDER_OK = 0x22c55e;
+export const BORDER_WRONG = 0xef4444;
+export const BORDER_HINT = 0xf59e0b;

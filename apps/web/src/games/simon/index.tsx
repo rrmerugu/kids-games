@@ -1,13 +1,24 @@
 import { useCallback, useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Badge, Button } from '@invana/ui';
-import { AppShell, GameHud, ResultDialog } from '@kids/ui';
+import { Badge } from '@invana/ui';
+import {
+  AppShell,
+  GameHud,
+  GameLayout,
+  GlossyButton,
+  ResultDialog,
+  Stopwatch,
+  TurnBanner,
+  useFeedback,
+} from '@kids/ui';
+import type { Turn } from '@kids/ui';
 import {
   GameCanvas,
   type GameBoard,
+  playError,
   playPad,
+  playSuccess,
   playWin,
-  playWrong,
 } from '@kids/game-engine';
 import {
   beginInput,
@@ -26,15 +37,20 @@ import { padColors } from '../../palette.js';
 interface Result {
   won: boolean;
   stars: number;
+  durationMs: number;
   newStickers: string[];
 }
 
 export function SimonScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
   const def = getLevel('simon', level) as SimonLevel | undefined;
+  const settings = useProgress((s) => s.settings);
+  const { feedback, cheer, retry, help, hint, clear } = useFeedback();
 
   const [result, setResult] = useState<Result | null>(null);
   const [hud, setHud] = useState({ len: 0, target: def?.targetLength ?? 0 });
+  const [turn, setTurn] = useState<Turn | null>(null);
+  const [roundNonce, setRoundNonce] = useState(0);
 
   const stateRef = useRef<SimonState | null>(null);
   const rngRef = useRef<Rng>(() => 0);
@@ -63,6 +79,7 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         const seq = stateRef.current!.sequence;
         const sound = useProgress.getState().settings.sound;
         showingRef.current = true;
+        setTurn('watch'); // game's turn — child should watch
         const stepMs = 620;
         const litMs = 380;
         seq.forEach((pad, idx) => {
@@ -75,10 +92,13 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         after(seq.length * stepMs + 150, () => {
           showingRef.current = false;
           stateRef.current = beginInput({ ...stateRef.current!, inputIndex: 0 });
+          setTurn('go'); // player's turn — go!
         });
       };
 
       const setup = (): void => {
+        clear();
+        useProgress.getState().markGameStarted();
         const seed = (Date.now() ^ (level * 0x85ebca6b)) >>> 0;
         rngRef.current = mulberry32(seed);
         let s = createSimonState({ pads: 4, targetLength: def.targetLength });
@@ -89,7 +109,7 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
 
         const colors = padColors(useProgress.getState().settings.palette);
         const cell = 150;
-        const cells = board.gridCells(2, 2, cell, 24);
+        const cells = board.gridCells(2, 2, cell, 44);
         board.clear();
         for (let i = 0; i < 4; i++) {
           const p = cells[i]!;
@@ -110,17 +130,30 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
       };
 
       const finish = (won: boolean): void => {
+        setTurn(null);
         const round: RoundResult = {
           gameId: 'simon',
           level,
           won,
           durationMs: performance.now() - startRef.current,
-          metrics: { replays: replaysRef.current },
+          metrics: {
+            replays: replaysRef.current,
+            hints: replaysRef.current,
+            mistakes: stateRef.current?.mistakes ?? 0,
+          },
         };
         const { sound } = useProgress.getState().settings;
         const outcome = useProgress.getState().recordRound(round);
-        if (won && sound) playWin();
-        setResult({ won, stars: outcome.stars, newStickers: outcome.newStickers });
+        if (won) {
+          cheer();
+          if (sound) playWin();
+        }
+        setResult({
+          won,
+          stars: outcome.stars,
+          durationMs: round.durationMs,
+          newStickers: outcome.newStickers,
+        });
       };
 
       const handleTap = (id: string): void => {
@@ -133,7 +166,8 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         const { sound } = useProgress.getState().settings;
 
         if (out.kind === 'wrong') {
-          if (sound) playWrong();
+          retry();
+          if (sound) playError();
           board.shake(`pad${pad}`);
           after(600, () => finish(false));
           return;
@@ -144,6 +178,8 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         after(220, () => flash(pad, false));
 
         if (out.kind === 'round-complete') {
+          cheer();
+          if (sound) playSuccess();
           after(520, () => {
             stateRef.current = extendSequence(stateRef.current!, rngRef.current);
             setHud((h) => ({ ...h, len: stateRef.current!.sequence.length }));
@@ -156,6 +192,7 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
 
       restartRef.current = () => {
         setResult(null);
+        setRoundNonce((n) => n + 1);
         setup();
       };
       showAgainRef.current = () => {
@@ -172,7 +209,7 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         timeouts.forEach((t) => clearTimeout(t));
       };
     },
-    [def, level],
+    [def, level, cheer, retry, clear],
   );
 
   if (!def) return <Navigate to="/" replace />;
@@ -180,29 +217,50 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
 
   return (
     <AppShell>
-      <GameCanvas onReady={handleReady} backgroundColor={0x0f172a} />
-      <GameHud
-        title={`🎵 Level ${level}`}
-        onBack={() => navigate('/play/simon')}
-        onRestart={() => restartRef.current()}
+      <GameLayout
+        side={settings.buddyPosition}
+        feedback={feedback}
+        reducedMotion={settings.reducedMotion}
+        onHelp={() => {
+          help();
+          hint('Watch the colours again! 👀');
+          showAgainRef.current();
+        }}
+        idleMessage={
+          turn === 'watch'
+            ? 'Watch carefully! 👀'
+            : turn === 'go'
+              ? 'Your turn — tap! 👆'
+              : 'Watch, then tap the colours! 🎵'
+        }
+        hud={
+          <GameHud
+            title={`🎵 Level ${level}`}
+            onBack={() => navigate('/play/simon')}
+            onRestart={() => restartRef.current()}
+          >
+            <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
+              {hud.len}/{hud.target}
+            </Badge>
+            <Stopwatch resetSignal={roundNonce} />
+            <GlossyButton
+              icon="👀"
+              label="Again"
+              color="amber"
+              ariaLabel="Show again"
+              onClick={() => showAgainRef.current()}
+            />
+          </GameHud>
+        }
       >
-        <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
-          {hud.len}/{hud.target}
-        </Badge>
-        <Button
-          variant="secondary"
-          size="lg"
-          className="pointer-events-auto h-12 w-12 rounded-full p-0 text-2xl shadow"
-          aria-label="Show again"
-          onClick={() => showAgainRef.current()}
-        >
-          👀
-        </Button>
-      </GameHud>
+        <GameCanvas onReady={handleReady} />
+        <TurnBanner turn={turn} />
+      </GameLayout>
       <ResultDialog
         open={result !== null}
         won={result?.won ?? false}
         stars={result?.stars ?? 0}
+        durationMs={result?.durationMs}
         newStickers={result?.newStickers ?? []}
         onPlayAgain={() => restartRef.current()}
         onNext={next ? () => navigate(`/play/simon/${next}`) : undefined}
