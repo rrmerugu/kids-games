@@ -64,27 +64,34 @@ export function HomeScreen(): React.JSX.Element {
         </>
       }
       footer={
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-1 text-center text-xs text-slate-500 dark:text-slate-400">
-          <p>
-            <a
-              className="font-semibold underline decoration-dotted underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200"
-              href="https://github.com/rrmerugu/kids-games/blob/main/LICENSE"
-              target="_blank"
-              rel="noreferrer"
-            >
-              MIT License
-            </a>
-            {' · '}
-            <a
-              className="font-semibold underline decoration-dotted underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200"
-              href="https://github.com/rrmerugu/kids-games/blob/main/build-your-game.md"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Build your game
-            </a>
-          </p>
-        </div>
+        <nav className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-xs text-slate-500 dark:text-slate-400">
+          <a
+            className="font-semibold underline decoration-dotted underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200"
+            href="https://github.com/rrmerugu/kids-games"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
+          <span aria-hidden>·</span>
+          <a
+            className="font-semibold underline decoration-dotted underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200"
+            href="https://github.com/rrmerugu/kids-games/blob/main/LICENSE"
+            target="_blank"
+            rel="noreferrer"
+          >
+            MIT License
+          </a>
+          <span aria-hidden>·</span>
+          <a
+            className="font-semibold underline decoration-dotted underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200"
+            href="https://github.com/rrmerugu/kids-games/blob/main/build-your-game.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Build your game
+          </a>
+        </nav>
       }
     >
       <div className="relative mx-auto flex h-full max-w-3xl flex-col justify-center gap-8 p-6">
@@ -113,9 +120,6 @@ export function HomeScreen(): React.JSX.Element {
             );
           })}
         </div>
-        <span className="absolute bottom-2 left-2 text-xs text-slate-400 dark:text-slate-600">
-          v{__APP_VERSION__}
-        </span>
       </div>
     </AppShell>
   );
