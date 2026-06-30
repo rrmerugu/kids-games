@@ -15,7 +15,10 @@ import { GameBoard } from './GameBoard.js';
 export interface GameCanvasProps {
   /** Called once the board is ready. Return a cleanup fn to run on unmount. */
   onReady: (board: GameBoard) => void | (() => void);
-  /** Canvas background colour. Default a soft slate (`0xf8fafc`). */
+  /**
+   * Canvas background colour. Omit for a **transparent** canvas (lets a themed
+   * background behind it — e.g. the GameLayout space scene — show through).
+   */
   backgroundColor?: number;
   className?: string;
   style?: CSSProperties;
@@ -23,7 +26,7 @@ export interface GameCanvasProps {
 
 export function GameCanvas({
   onReady,
-  backgroundColor = 0xf8fafc,
+  backgroundColor,
   className,
   style,
 }: GameCanvasProps): React.JSX.Element {
@@ -39,8 +42,9 @@ export function GameCanvas({
     let disposed = false;
     let cleanupGame: void | (() => void);
 
+    const opaque = backgroundColor !== undefined;
     void canvas
-      .init({ container: host, autoResize: true, opaque: true, backgroundColor })
+      .init({ container: host, autoResize: true, opaque, ...(opaque ? { backgroundColor } : {}) })
       .then(() => {
         if (disposed) return;
         const layer = new BoardLayer({ id: 'board', options: {} });

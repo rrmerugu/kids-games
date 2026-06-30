@@ -155,6 +155,8 @@ function animate(durationMs: number, onFrame: (t: number) => void, onDone?: () =
 
 export class GameBoard {
   private readonly records = new Map<string, Rec>();
+  /** Active per-shape rAF handles (breathing borders), so we can cancel them. */
+  private readonly anims = new Map<string, number>();
 
   constructor(
     private readonly canvas: Canvas,
@@ -229,12 +231,53 @@ export class GameBoard {
   }
 
   remove(id: string): void {
+    this.cancelAnim(id);
     if (this.records.delete(id)) this.renderer.removeShape(id);
   }
 
   clear(): void {
+    for (const id of this.anims.keys()) cancelAnimationFrame(this.anims.get(id)!);
+    this.anims.clear();
     for (const id of this.records.keys()) this.renderer.removeShape(id);
     this.records.clear();
+  }
+
+  // --- borders / highlights ----------------------------------------------
+
+  private cancelAnim(id: string): void {
+    const h = this.anims.get(id);
+    if (h !== undefined) {
+      cancelAnimationFrame(h);
+      this.anims.delete(id);
+    }
+  }
+
+  /** Set a static border on a shape (e.g. red for "wrong"). */
+  setBorder(id: string, color: number, width = 6): void {
+    this.cancelAnim(id);
+    this.update(id, { stroke: { color, width, alpha: 1 } });
+  }
+
+  /**
+   * A "breathing" highlight border — stroke width + alpha pulse for `durationMs`
+   * (signals "correct!"), then settle to a steady border so the shape stays
+   * marked. Cheap: only the few highlighted shapes animate, and they stop.
+   */
+  breatheBorder(id: string, color: number, durationMs = 1500): void {
+    this.cancelAnim(id);
+    const start = performance.now();
+    const tick = (now: number): void => {
+      const e = (now - start) / durationMs;
+      const s = (Math.sin(e * Math.PI * 4) + 1) / 2; // ~2 pulses over the duration
+      if (e < 1) {
+        this.update(id, { stroke: { color, width: 5 + 6 * s, alpha: 0.55 + 0.45 * s } });
+        this.anims.set(id, requestAnimationFrame(tick));
+      } else {
+        this.anims.delete(id);
+        this.update(id, { stroke: { color, width: 6, alpha: 1 } });
+      }
+    };
+    this.anims.set(id, requestAnimationFrame(tick));
   }
 
   /** Subscribe to taps on any shape. Returns an unsubscribe fn. */

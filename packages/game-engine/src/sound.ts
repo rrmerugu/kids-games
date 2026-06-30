@@ -56,6 +56,18 @@ export function playWrong(): void {
   tone(150, 220, 'sawtooth', 0.14);
 }
 
+/** "Done!" — a bright two-note rising chime for a correct answer. */
+export function playSuccess(): void {
+  tone(659.25, 90, 'triangle', 0.16); // E5
+  setTimeout(() => tone(987.77, 150, 'triangle', 0.16), 95); // B5
+}
+
+/** "Error" — a soft, non-scary two-note falling buzz for a wrong answer. */
+export function playError(): void {
+  tone(311.13, 130, 'sine', 0.14); // E♭4
+  setTimeout(() => tone(233.08, 200, 'sine', 0.14), 110); // B♭3
+}
+
 export function playWin(): void {
   [523.25, 659.25, 783.99].forEach((f, i) =>
     setTimeout(() => tone(f, 180, 'triangle', 0.18), i * 130),

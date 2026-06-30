@@ -9,3 +9,4 @@ export type {
 } from './GameBoard.js';
 export { BoardLayer } from './BoardLayer.js';
 export * from './sound.js';
+export * from './speak.js';
