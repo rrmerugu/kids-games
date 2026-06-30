@@ -1,4 +1,4 @@
-# Kids Brain Games
+# Kids Games (by a Dad)
 
 Open-access (no login) brain games for young kids, rendered with
 [`@invana/canvas`](https://www.npmjs.com/package/@invana/canvas) and styled with the
