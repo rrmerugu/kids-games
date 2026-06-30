@@ -1,4 +1,6 @@
-import { Card, CardContent } from '@invana/ui';
+import { useNavigate } from 'react-router-dom';
+import { BarChart3 } from 'lucide-react';
+import { Button, Card, CardContent } from '@invana/ui';
 import { AppShell, BuddyPanel, JsonForm } from '@kids/ui';
 import { NavIcons } from '../components/NavIcons.js';
 import { useProgress, type BuddyPosition, type ThemeMode } from '@kids/storage';
@@ -16,6 +18,7 @@ function toTheme(value: unknown): ThemeMode {
 }
 
 export function SettingsScreen(): React.JSX.Element {
+  const navigate = useNavigate();
   const settings = useProgress((s) => s.settings);
   const setSetting = useProgress((s) => s.setSetting);
 
@@ -44,6 +47,14 @@ export function SettingsScreen(): React.JSX.Element {
             />
           </CardContent>
         </Card>
+
+        <Button
+          variant="outline"
+          className="mt-6 h-14 w-full justify-center gap-2 rounded-2xl text-lg font-bold"
+          onClick={() => navigate('/parent')}
+        >
+          <BarChart3 className="h-5 w-5" aria-hidden /> Parent Dashboard 📊
+        </Button>
 
         {settings.buddyPosition !== 'off' && (
           <div className="mt-6 flex flex-col items-center gap-2">

@@ -19,6 +19,8 @@ export const STICKERS: readonly Sticker[] = [
   { id: 'super-simon', emoji: '🎵', label: 'Super Simon' },
   { id: 'speedy-keys', emoji: '⌨️', label: 'Speedy Keys' },
   { id: 'word-wizard', emoji: '📝', label: 'Word Wizard' },
+  { id: 'super-speaker', emoji: '🗣️', label: 'Super Speaker' },
+  { id: 'friendly-talker', emoji: '💬', label: 'Friendly Talker' },
 ];
 
 export function stickerById(id: string): Sticker | undefined {
@@ -44,6 +46,8 @@ export function newlyEarned(
     if (result.gameId === 'simon') award('super-simon');
     if (result.gameId === 'keyboard') award('speedy-keys');
     if (result.gameId === 'word-typing') award('word-wizard');
+    if (result.gameId === 'say-it') award('super-speaker');
+    if (result.gameId === 'say-hello') award('friendly-talker');
   }
   return earned;
 }

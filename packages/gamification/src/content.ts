@@ -1,4 +1,5 @@
 /** Shared game content (picture pools, letter sets, pad palette). */
+import type { ConvPrompt, SpeakItem } from '@kids/game-core';
 
 /** Emoji picture pool for Memory Match. Length ≥ the largest level's pairs. */
 export const ANIMAL_FACES = [
@@ -31,3 +32,118 @@ export const WORDS_HARD = [
   'APPLE', 'TIGER', 'HORSE', 'TRAIN', 'HOUSE', 'GRASS', 'CLOUD', 'PLANT',
   'SNAKE', 'BREAD', 'CHAIR', 'SMILE', 'BEACH', 'MOUSE', 'ROBOT', 'HONEY',
 ] as const;
+
+/* ---------------------------------------------------------------------------
+ * Say It! (Speaking) — picture + word the child hears, then repeats aloud.
+ * Each item pairs an emoji (the meaning carrier) with the word to say. Easy →
+ * hard mirrors the Word Typing curve: short concrete nouns first.
+ * ------------------------------------------------------------------------- */
+export const SAY_IT_EASY: readonly SpeakItem[] = [
+  { word: 'CAT', emoji: '🐱' }, { word: 'DOG', emoji: '🐶' }, { word: 'SUN', emoji: '☀️' },
+  { word: 'COW', emoji: '🐮' }, { word: 'PIG', emoji: '🐷' }, { word: 'BEE', emoji: '🐝' },
+  { word: 'FOX', emoji: '🦊' }, { word: 'CAR', emoji: '🚗' }, { word: 'BUS', emoji: '🚌' },
+  { word: 'HAT', emoji: '🎩' }, { word: 'CUP', emoji: '🥤' }, { word: 'EGG', emoji: '🥚' },
+];
+
+export const SAY_IT_MID: readonly SpeakItem[] = [
+  { word: 'FISH', emoji: '🐟' }, { word: 'BIRD', emoji: '🐦' }, { word: 'FROG', emoji: '🐸' },
+  { word: 'DUCK', emoji: '🦆' }, { word: 'CAKE', emoji: '🍰' }, { word: 'MILK', emoji: '🥛' },
+  { word: 'BALL', emoji: '⚽' }, { word: 'TREE', emoji: '🌳' }, { word: 'STAR', emoji: '⭐' },
+  { word: 'MOON', emoji: '🌙' }, { word: 'BOOK', emoji: '📖' }, { word: 'SHOE', emoji: '👟' },
+];
+
+export const SAY_IT_HARD: readonly SpeakItem[] = [
+  { word: 'APPLE', emoji: '🍎' }, { word: 'TIGER', emoji: '🐯' }, { word: 'HORSE', emoji: '🐴' },
+  { word: 'TRAIN', emoji: '🚆' }, { word: 'HOUSE', emoji: '🏠' }, { word: 'SNAKE', emoji: '🐍' },
+  { word: 'BREAD', emoji: '🍞' }, { word: 'MOUSE', emoji: '🐭' }, { word: 'ROBOT', emoji: '🤖' },
+  { word: 'HONEY', emoji: '🍯' }, { word: 'PANDA', emoji: '🐼' }, { word: 'LEMON', emoji: '🍋' },
+];
+
+/* ---------------------------------------------------------------------------
+ * Say Hello! (Conversation) — a character speaks a line; the child taps the
+ * right reply. Greetings, politeness, and asking for / offering help. Each
+ * prompt carries its own choices (one correct), so the screen just renders them.
+ * ------------------------------------------------------------------------- */
+export const GREETINGS: readonly ConvPrompt[] = [
+  {
+    speaker: '🧑',
+    text: 'Hi! How are you?',
+    choices: [
+      { emoji: '😊', label: "I'm good!", correct: true },
+      { emoji: '🍎', label: 'Apple', correct: false },
+      { emoji: '🚗', label: 'Car', correct: false },
+    ],
+  },
+  {
+    speaker: '👩',
+    text: 'Good morning!',
+    choices: [
+      { emoji: '🌅', label: 'Morning!', correct: true },
+      { emoji: '🌙', label: 'Goodnight', correct: false },
+      { emoji: '🍌', label: 'Banana', correct: false },
+    ],
+  },
+  {
+    speaker: '🧒',
+    text: 'Thank you!',
+    choices: [
+      { emoji: '🤗', label: "You're welcome!", correct: true },
+      { emoji: '🐸', label: 'Frog', correct: false },
+      { emoji: '⚽', label: 'Ball', correct: false },
+    ],
+  },
+  {
+    speaker: '🧑',
+    text: "What's your name?",
+    choices: [
+      { emoji: '😀', label: "I'm Sam!", correct: true },
+      { emoji: '🍕', label: 'Pizza', correct: false },
+      { emoji: '🌧️', label: 'Rain', correct: false },
+    ],
+  },
+  {
+    speaker: '🧓',
+    text: 'Can you help me?',
+    choices: [
+      { emoji: '🙌', label: 'Yes, I can!', correct: true },
+      { emoji: '🐟', label: 'Fish', correct: false },
+      { emoji: '🎈', label: 'Balloon', correct: false },
+    ],
+  },
+  {
+    speaker: '🧑',
+    text: 'Bye bye!',
+    choices: [
+      { emoji: '👋', label: 'See you!', correct: true },
+      { emoji: '🍪', label: 'Cookie', correct: false },
+      { emoji: '🌵', label: 'Cactus', correct: false },
+    ],
+  },
+  {
+    speaker: '👧',
+    text: 'Nice to meet you!',
+    choices: [
+      { emoji: '😊', label: 'You too!', correct: true },
+      { emoji: '🚲', label: 'Bike', correct: false },
+      { emoji: '🧦', label: 'Sock', correct: false },
+    ],
+  },
+  {
+    speaker: '🧑',
+    text: 'Achoo! 🤧',
+    choices: [
+      { emoji: '💗', label: 'Bless you!', correct: true },
+      { emoji: '🦒', label: 'Giraffe', correct: false },
+      { emoji: '🥁', label: 'Drum', correct: false },
+    ],
+  },
+  {
+    speaker: '🧒',
+    text: 'Please pass the ball.',
+    choices: [
+      { emoji: '⚽', label: 'Here you go!', correct: true },
+      { emoji: '🌝', label: 'Moon', correct: false },
+      { emoji: '🧊', label: 'Ice', correct: false },
+    ],
+  },
+];

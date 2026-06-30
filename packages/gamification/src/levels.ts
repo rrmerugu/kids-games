@@ -5,12 +5,16 @@
  *
  * Tuned for a 6-year-old: gentle starts, no time pressure.
  */
-import type { GameId } from '@kids/game-core';
+import type { ConvPrompt, GameId, SpeakItem } from '@kids/game-core';
 import {
   ANIMAL_FACES,
+  GREETINGS,
   LETTERS_EASY,
   LETTERS_FULL,
   LETTERS_MID,
+  SAY_IT_EASY,
+  SAY_IT_HARD,
+  SAY_IT_MID,
   WORDS_EASY,
   WORDS_HARD,
   WORDS_MID,
@@ -37,11 +41,25 @@ export interface WordTypingLevel {
   targets: number;
   words: readonly string[];
 }
+export interface SayItLevel {
+  kind: 'say-it';
+  /** How many picture-words to clear the round. */
+  targets: number;
+  items: readonly SpeakItem[];
+}
+export interface SayHelloLevel {
+  kind: 'say-hello';
+  /** How many conversation turns to clear the round. */
+  targets: number;
+  prompts: readonly ConvPrompt[];
+}
 export type LevelDef =
   | MemoryMatchLevel
   | SimonLevel
   | KeyboardLevel
-  | WordTypingLevel;
+  | WordTypingLevel
+  | SayItLevel
+  | SayHelloLevel;
 
 /** All levels per game, in order. Index 0 = level 1. */
 export const LEVELS: Record<GameId, readonly LevelDef[]> = {
@@ -60,6 +78,16 @@ export const LEVELS: Record<GameId, readonly LevelDef[]> = {
     { kind: 'word-typing', targets: 3, words: WORDS_EASY },
     { kind: 'word-typing', targets: 4, words: WORDS_MID },
     { kind: 'word-typing', targets: 5, words: WORDS_HARD },
+  ],
+  'say-it': [
+    { kind: 'say-it', targets: 4, items: SAY_IT_EASY },
+    { kind: 'say-it', targets: 5, items: SAY_IT_MID },
+    { kind: 'say-it', targets: 6, items: SAY_IT_HARD },
+  ],
+  'say-hello': [
+    { kind: 'say-hello', targets: 3, prompts: GREETINGS },
+    { kind: 'say-hello', targets: 5, prompts: GREETINGS },
+    { kind: 'say-hello', targets: 7, prompts: GREETINGS },
   ],
 };
 

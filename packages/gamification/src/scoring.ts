@@ -8,6 +8,8 @@
  * - simon:        `replays` (times the sequence was re-shown)
  * - keyboard:     `misses`, `targets`
  * - word-typing:  `misses`, `letters` (total letters typed across the round)
+ * - say-it:       (none) — a no-grading practice game; finishing is the win
+ * - say-hello:    `misses`, `turns`
  */
 import type { RoundResult } from '@kids/game-core';
 
@@ -42,6 +44,18 @@ export function starsFor(result: RoundResult): Stars {
       const letters = result.metrics.letters ?? 1;
       if (misses === 0) return 3;
       if (misses <= Math.ceil(letters / 3)) return 2;
+      return 1;
+    }
+    case 'say-it': {
+      // Pure listen-and-repeat practice — there is no wrong answer, so finishing
+      // always earns 3 stars. We never grade a child's voice.
+      return 3;
+    }
+    case 'say-hello': {
+      const misses = result.metrics.misses ?? 0;
+      const turns = result.metrics.turns ?? 1;
+      if (misses === 0) return 3;
+      if (misses <= Math.ceil(turns / 2)) return 2;
       return 1;
     }
   }

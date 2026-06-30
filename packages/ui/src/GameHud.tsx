@@ -12,6 +12,8 @@ export interface GameHudProps {
   onRestart: () => void;
   /** Extra status widgets (progress, attempts, stopwatch). */
   children?: ReactNode;
+  /** Per-game analytics control shown on the right (e.g. <GameAnalyticsButton/>). */
+  analytics?: ReactNode;
   /** Global section switcher shown on the right (e.g. <NavIcons/>). */
   nav?: ReactNode;
 }
@@ -21,7 +23,7 @@ export interface GameHudProps {
  * glossy back/restart buttons, a readable title chip, room for status widgets
  * (counts, stopwatch), and an optional global section switcher on the right.
  */
-export function GameHud({ gameName, title, onBack, onRestart, children, nav }: GameHudProps): React.JSX.Element {
+export function GameHud({ gameName, title, onBack, onRestart, children, analytics, nav }: GameHudProps): React.JSX.Element {
   const [confirmRestart, setConfirmRestart] = useState(false);
 
   return (
@@ -41,6 +43,7 @@ export function GameHud({ gameName, title, onBack, onRestart, children, nav }: G
       </div>
 
       <div className="flex items-center gap-2">
+        {analytics}
         {nav}
         <GlossyButton icon="🔄" label="Restart" color="violet" onClick={() => setConfirmRestart(true)} />
       </div>

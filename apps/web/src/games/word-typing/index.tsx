@@ -23,6 +23,8 @@ import {
 } from '@kids/game-core';
 import { getLevel, nextLevel, type WordTypingLevel } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
+import { NavIcons } from '../../components/NavIcons.js';
+import { GameAnalyticsButton } from '../../components/GameAnalyticsButton.js';
 
 interface Result {
   won: boolean;
@@ -260,6 +262,8 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
             title={`📝 Level ${level}`}
             onBack={() => navigate('/play/word-typing')}
             onRestart={() => restartRef.current()}
+            analytics={<GameAnalyticsButton gameId="word-typing" />}
+            nav={<NavIcons />}
           >
             <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
               {hud.words}/{hud.targets}

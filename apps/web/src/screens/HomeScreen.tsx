@@ -4,7 +4,7 @@ import { AppShell, GameTile } from '@kids/ui';
 import { NavIcons } from '../components/NavIcons.js';
 import { levelCount, totalStars } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
-import { GAMES } from '../games/registry.js';
+import { CATEGORIES, gamesByCategory } from '../games/registry.js';
 
 export function HomeScreen(): React.JSX.Element {
   const navigate = useNavigate();
@@ -70,20 +70,35 @@ export function HomeScreen(): React.JSX.Element {
             </span>
           </p>
         </header>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {GAMES.map((g) => {
-            const best = bestStars[g.id] ?? {};
-            const max = 3 * levelCount(g.id);
-            const progress = max ? (totalStars(best) / max) * 100 : 0;
+        {/* Each category is its own column; games stack vertically within it. */}
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
+          {CATEGORIES.map((cat) => {
+            const games = gamesByCategory(cat.id);
+            if (games.length === 0) return null;
             return (
-              <GameTile
-                key={g.id}
-                emoji={g.emoji}
-                label={g.label}
-                color={g.color}
-                progress={progress}
-                onClick={() => navigate(`/play/${g.id}`)}
-              />
+              <section key={cat.id} className="flex flex-col gap-3">
+                <h3 className="flex items-center gap-2 text-base font-extrabold text-slate-600 dark:text-slate-300">
+                  <span aria-hidden className="text-xl">{cat.emoji}</span>
+                  {cat.label}
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {games.map((g) => {
+                    const best = bestStars[g.id] ?? {};
+                    const max = 3 * levelCount(g.id);
+                    const progress = max ? (totalStars(best) / max) * 100 : 0;
+                    return (
+                      <GameTile
+                        key={g.id}
+                        emoji={g.emoji}
+                        label={g.label}
+                        color={g.color}
+                        progress={progress}
+                        onClick={() => navigate(`/play/${g.id}`)}
+                      />
+                    );
+                  })}
+                </div>
+              </section>
             );
           })}
         </div>

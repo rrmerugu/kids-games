@@ -69,6 +69,16 @@ export function speakWord(word: string): void {
   speak(word, 1.1, 0.9);
 }
 
+/** Read a word slowly, for "say it after me" pronunciation practice. */
+export function speakWordSlow(word: string): void {
+  speak(word, 1.1, 0.55);
+}
+
+/** Speak an arbitrary phrase at a natural pace (e.g. a conversation line). */
+export function speakPhrase(text: string): void {
+  speak(text, 1.1, 0.95);
+}
+
 /** "Watch!" — the game is taking its turn (e.g. flashing a sequence). */
 export function speakWatch(): void {
   speak('Watch!', 1.1, 1.0);

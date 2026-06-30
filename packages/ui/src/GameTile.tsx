@@ -17,15 +17,15 @@ export function GameTile({ emoji, label, color, onClick, progress }: GameTilePro
       type="button"
       onClick={onClick}
       className={cn(
-        'flex aspect-square w-full flex-col items-center justify-center gap-3 rounded-[2rem] p-6 shadow-xl',
+        'flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-3xl p-4 shadow-xl',
         'transition-transform duration-150 hover:scale-[1.03] active:scale-95',
         color,
       )}
     >
-      <span className="text-7xl drop-shadow-sm">{emoji}</span>
-      <span className="text-2xl font-extrabold text-white drop-shadow">{label}</span>
+      <span className="text-5xl drop-shadow-sm">{emoji}</span>
+      <span className="text-lg font-extrabold text-white drop-shadow">{label}</span>
       {progress !== undefined && (
-        <Progress value={progress} className="h-3 w-3/4 bg-white/40" />
+        <Progress value={progress} className="h-2 w-3/4 bg-white/40" />
       )}
     </button>
   );

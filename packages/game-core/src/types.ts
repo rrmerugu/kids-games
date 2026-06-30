@@ -1,5 +1,11 @@
 /** The playable games. */
-export type GameId = 'memory-match' | 'simon' | 'keyboard' | 'word-typing';
+export type GameId =
+  | 'memory-match'
+  | 'simon'
+  | 'keyboard'
+  | 'word-typing'
+  | 'say-it'
+  | 'say-hello';
 
 /**
  * Outcome of one finished round, handed to the gamification layer to compute

@@ -4,6 +4,8 @@ import { MemoryMatchScreen } from './memory-match/index.js';
 import { SimonScreen } from './simon/index.js';
 import { KeyboardScreen } from './keyboard/index.js';
 import { WordTypingScreen } from './word-typing/index.js';
+import { SayItScreen } from './say-it/index.js';
+import { SayHelloScreen } from './say-hello/index.js';
 
 /** Resolve `/play/:gameId/:level` to the matching game screen. */
 export function GameRoute(): React.JSX.Element {
@@ -24,6 +26,10 @@ export function GameRoute(): React.JSX.Element {
       return <KeyboardScreen key={key} level={lvl} />;
     case 'word-typing':
       return <WordTypingScreen key={key} level={lvl} />;
+    case 'say-it':
+      return <SayItScreen key={key} level={lvl} />;
+    case 'say-hello':
+      return <SayHelloScreen key={key} level={lvl} />;
     default:
       return <Navigate to="/" replace />;
   }
