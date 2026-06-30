@@ -1,17 +1,14 @@
 import { useNavigate } from 'react-router-dom';
+import { ShieldCheck } from 'lucide-react';
 import { AppShell, GameTile } from '@kids/ui';
-import { GlossyIconButton } from '../components/GlossyIconButton.js';
+import { NavIcons } from '../components/NavIcons.js';
 import { levelCount, totalStars } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { GAMES } from '../games/registry.js';
-import { useResolvedTheme } from '../theme.js';
 
 export function HomeScreen(): React.JSX.Element {
   const navigate = useNavigate();
   const bestStars = useProgress((s) => s.bestStars);
-  const sound = useProgress((s) => s.settings.sound);
-  const setSetting = useProgress((s) => s.setSetting);
-  const resolvedTheme = useResolvedTheme();
 
   return (
     <AppShell
@@ -23,23 +20,7 @@ export function HomeScreen(): React.JSX.Element {
               built for kids, and for parents to learn about their kid's abilities
             </span>
           </div>
-          <div className="flex gap-2">
-            <GlossyIconButton label="Toggle sound" onClick={() => setSetting('sound', !sound)}>
-              {sound ? '🔊' : '🔈'}
-            </GlossyIconButton>
-            <GlossyIconButton
-              label="Toggle theme"
-              onClick={() => setSetting('theme', resolvedTheme === 'dark' ? 'light' : 'dark')}
-            >
-              {resolvedTheme === 'dark' ? '☀️' : '🌙'}
-            </GlossyIconButton>
-            <GlossyIconButton label="Parent dashboard" onClick={() => navigate('/parent')}>
-              📊
-            </GlossyIconButton>
-            <GlossyIconButton label="Settings" onClick={() => navigate('/settings')}>
-              ⚙️
-            </GlossyIconButton>
-          </div>
+          <NavIcons />
         </>
       }
       footer={
@@ -80,6 +61,13 @@ export function HomeScreen(): React.JSX.Element {
           </h2>
           <p className="my-4 text-2xl font-semibold text-slate-500 dark:text-slate-400">
             focus, practise and repeat
+          </p>
+          <p className="mx-auto mt-2 inline-flex max-w-xl items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-left text-sm font-medium text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300">
+            <ShieldCheck className="h-10 w-10 shrink-0" strokeWidth={2.5} aria-hidden />
+            <span>
+              Privacy first — your child's progress stays in this browser and is never
+              sent to a server. Export it anytime to move to another device.
+            </span>
           </p>
         </header>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">

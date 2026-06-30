@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Badge,
   Button,
@@ -16,6 +15,7 @@ import {
   TableRow,
 } from '@invana/ui';
 import { AppShell } from '@kids/ui';
+import { NavIcons } from '../components/NavIcons.js';
 import { computeStats, formatDuration } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { gameMeta } from '../games/registry.js';
@@ -33,7 +33,6 @@ function StatCard({ label, value, hint }: { label: string; value: string; hint?:
 }
 
 export function ParentDashboard(): React.JSX.Element {
-  const navigate = useNavigate();
   const sessions = useProgress((s) => s.sessions);
   const gamesStarted = useProgress((s) => s.gamesStarted);
   const clearSessions = useProgress((s) => s.clearSessions);
@@ -46,17 +45,8 @@ export function ParentDashboard(): React.JSX.Element {
     <AppShell
       header={
         <>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="h-12 w-12 rounded-full p-0 text-2xl"
-            aria-label="Back"
-            onClick={() => navigate('/')}
-          >
-            ⬅️
-          </Button>
           <h1 className="text-2xl font-extrabold">Parent Dashboard 📊</h1>
-          <span className="w-12" />
+          <NavIcons />
         </>
       }
     >

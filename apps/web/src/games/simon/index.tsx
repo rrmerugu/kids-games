@@ -32,6 +32,7 @@ import {
 } from '@kids/game-core';
 import { getLevel, nextLevel, type SimonLevel } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
+import { NavIcons } from '../../components/NavIcons.js';
 import { padColors } from '../../palette.js';
 
 interface Result {
@@ -238,6 +239,7 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
             title={`🎵 Level ${level}`}
             onBack={() => navigate('/play/simon')}
             onRestart={() => restartRef.current()}
+            nav={<NavIcons />}
           >
             <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
               {hud.len}/{hud.target}

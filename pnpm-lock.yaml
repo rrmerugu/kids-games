@@ -41,6 +41,9 @@ importers:
       '@kids/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      lucide-react:
+        specifier: ^0.562.0
+        version: 0.562.0(react@18.3.1)
       pixi.js:
         specifier: ^8.18.1
         version: 8.19.0

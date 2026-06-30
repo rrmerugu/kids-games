@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import { Button, Card, CardContent } from '@invana/ui';
+import { Card, CardContent } from '@invana/ui';
 import { AppShell, BuddyPanel, JsonForm } from '@kids/ui';
+import { NavIcons } from '../components/NavIcons.js';
 import { useProgress, type BuddyPosition, type ThemeMode } from '@kids/storage';
 import { SETTINGS_FIELDS } from '../settings/schema.js';
 
@@ -16,7 +16,6 @@ function toTheme(value: unknown): ThemeMode {
 }
 
 export function SettingsScreen(): React.JSX.Element {
-  const navigate = useNavigate();
   const settings = useProgress((s) => s.settings);
   const setSetting = useProgress((s) => s.setSetting);
 
@@ -24,17 +23,8 @@ export function SettingsScreen(): React.JSX.Element {
     <AppShell
       header={
         <>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="h-12 w-12 rounded-full p-0 text-2xl"
-            aria-label="Back"
-            onClick={() => navigate('/')}
-          >
-            ⬅️
-          </Button>
           <h1 className="text-2xl font-extrabold">Settings ⚙️</h1>
-          <span className="w-12" />
+          <NavIcons />
         </>
       }
     >

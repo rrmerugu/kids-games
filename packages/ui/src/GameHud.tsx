@@ -8,14 +8,16 @@ export interface GameHudProps {
   onRestart: () => void;
   /** Extra status widgets (progress, attempts, stopwatch). */
   children?: ReactNode;
+  /** Global section switcher shown on the right (e.g. <NavIcons/>). */
+  nav?: ReactNode;
 }
 
 /**
  * Top bar for a game — a normal flex row (not an overlay) above the board, with
- * glossy back/restart buttons, a readable title chip, and room for status
- * widgets (counts, stopwatch).
+ * glossy back/restart buttons, a readable title chip, room for status widgets
+ * (counts, stopwatch), and an optional global section switcher on the right.
  */
-export function GameHud({ title, onBack, onRestart, children }: GameHudProps): React.JSX.Element {
+export function GameHud({ title, onBack, onRestart, children, nav }: GameHudProps): React.JSX.Element {
   return (
     <div className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 px-3 py-2">
       <GlossyButton icon="⬅️" label="Back" color="sky" onClick={onBack} />
@@ -27,7 +29,10 @@ export function GameHud({ title, onBack, onRestart, children }: GameHudProps): R
         {children}
       </div>
 
-      <GlossyButton icon="🔄" label="Restart" color="violet" onClick={onRestart} />
+      <div className="flex items-center gap-2">
+        {nav}
+        <GlossyButton icon="🔄" label="Restart" color="violet" onClick={onRestart} />
+      </div>
     </div>
   );
 }
