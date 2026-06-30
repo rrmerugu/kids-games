@@ -5,6 +5,48 @@
    lives under node_modules/@kids/ui, so point the scanner at its source. */
 @source "../../../packages/ui/src/**/*.{ts,tsx}";
 
+/* Class-based dark mode: `dark:` utilities key off a `.dark` ancestor (toggled
+   on <html> by useApplyTheme), matching the design kit's convention. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Kid-friendly, highly legible rounded font app-wide. */
+@theme {
+  --font-sans: "Fredoka", ui-rounded, "Comic Neue", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Bigger root size so all rem-based text scales up for early readers (5+). */
+html {
+  font-size: 18px;
+}
+
+body {
+  font-family: "Fredoka", ui-rounded, "Comic Neue", "Segoe UI", system-ui, sans-serif;
+}
+
+/* @invana/ui ships no dark values for the core design tokens (only sidebar),
+   so cards/dialogs/badges stay light under `.dark`. Supply a dark palette here;
+   it overrides the kit's :root tokens whenever the `.dark` class is present. */
+.dark {
+  --color-background: #0f172a;
+  --color-foreground: #e2e8f0;
+  --color-card: #1e293b;
+  --color-card-foreground: #e2e8f0;
+  --color-popover: #1e293b;
+  --color-popover-foreground: #e2e8f0;
+  --color-muted: #334155;
+  --color-muted-foreground: #94a3b8;
+  --color-secondary: #334155;
+  --color-secondary-foreground: #e2e8f0;
+  --color-accent: #334155;
+  --color-accent-foreground: #e2e8f0;
+  --color-border: #334155;
+  --color-input: #334155;
+  /* raw HSL triplets used by a few surface-alpha utilities */
+  --background: 222 47% 11%;
+  --foreground: 210 40% 96%;
+  --accent: 215 28% 27%;
+}
+
 html,
 body,
 #root {

@@ -1,48 +1,33 @@
 import type { ReactNode } from 'react';
-import { Badge, Button } from '@invana/ui';
+import { GlossyButton } from './GlossyButton.js';
 
 export interface GameHudProps {
   /** Short status, e.g. "🐶 Level 2". */
   title: string;
   onBack: () => void;
   onRestart: () => void;
-  /** Extra status widgets (progress, attempts, "show again" button). */
+  /** Extra status widgets (progress, attempts, stopwatch). */
   children?: ReactNode;
 }
 
 /**
- * Floating top bar over the canvas. Uses `pointer-events-none` on the bar so the
- * canvas stays interactive, re-enabling pointer events only on the controls.
+ * Top bar for a game — a normal flex row (not an overlay) above the board, with
+ * glossy back/restart buttons, a readable title chip, and room for status
+ * widgets (counts, stopwatch).
  */
 export function GameHud({ title, onBack, onRestart, children }: GameHudProps): React.JSX.Element {
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 p-3">
-      <Button
-        variant="secondary"
-        size="lg"
-        className="pointer-events-auto h-12 w-12 rounded-full p-0 text-2xl shadow"
-        aria-label="Back"
-        onClick={onBack}
-      >
-        ⬅️
-      </Button>
+    <div className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 px-3 py-2">
+      <GlossyButton icon="⬅️" label="Back" color="sky" onClick={onBack} />
 
-      <div className="pointer-events-auto flex items-center gap-2">
-        <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="inline-flex h-12 items-center rounded-full bg-white/10 px-4 text-lg font-bold text-white shadow ring-1 ring-white/20 backdrop-blur">
           {title}
-        </Badge>
+        </span>
         {children}
       </div>
 
-      <Button
-        variant="secondary"
-        size="lg"
-        className="pointer-events-auto h-12 w-12 rounded-full p-0 text-2xl shadow"
-        aria-label="Restart"
-        onClick={onRestart}
-      >
-        🔄
-      </Button>
+      <GlossyButton icon="🔄" label="Restart" color="violet" onClick={onRestart} />
     </div>
   );
 }
