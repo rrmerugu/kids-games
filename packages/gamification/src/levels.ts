@@ -61,34 +61,65 @@ export type LevelDef =
   | SayItLevel
   | SayHelloLevel;
 
+/** How many levels every game offers. Kids grow into a long, gentle ladder. */
+export const LEVELS_PER_GAME = 50;
+
+/**
+ * Ramp a numeric difficulty knob across {@link LEVELS_PER_GAME} levels: start at
+ * `from`, step up by 1 every `every` levels, and never exceed `to` (the curve
+ * plateaus at its cap for the hardest levels). `every` is chosen so the cap is
+ * reached near the last level, keeping the slope gentle for a 5–10 year-old.
+ * Each level still shuffles fresh content, so same-knob levels play differently.
+ */
+function ramp(from: number, to: number): number[] {
+  const every = Math.max(1, Math.floor((LEVELS_PER_GAME - 1) / (to - from)));
+  return Array.from({ length: LEVELS_PER_GAME }, (_, i) =>
+    Math.min(from + Math.floor(i / every), to),
+  );
+}
+
+/**
+ * Pick one of three content tiers by level index: first third → `easy`, middle
+ * third → `mid`, last third → `hard`. Content difficulty rises alongside the
+ * numeric knobs.
+ */
+function tier<T>(i: number, easy: T, mid: T, hard: T): T {
+  const f = i / LEVELS_PER_GAME;
+  return f < 1 / 3 ? easy : f < 2 / 3 ? mid : hard;
+}
+
 /** All levels per game, in order. Index 0 = level 1. */
 export const LEVELS: Record<GameId, readonly LevelDef[]> = {
-  'memory-match': [3, 4, 6, 8, 10, 12].map(
+  'memory-match': ramp(2, 18).map(
     (pairs): MemoryMatchLevel => ({ kind: 'memory-match', pairs, faces: ANIMAL_FACES }),
   ),
-  simon: [2, 3, 4, 5, 6, 8].map(
+  simon: ramp(2, 18).map(
     (targetLength): SimonLevel => ({ kind: 'simon', pads: 4, targetLength }),
   ),
-  keyboard: [
-    { kind: 'keyboard', targets: 5, alphabet: LETTERS_EASY },
-    { kind: 'keyboard', targets: 8, alphabet: LETTERS_MID },
-    { kind: 'keyboard', targets: 10, alphabet: LETTERS_FULL },
-  ],
-  'word-typing': [
-    { kind: 'word-typing', targets: 3, words: WORDS_EASY },
-    { kind: 'word-typing', targets: 4, words: WORDS_MID },
-    { kind: 'word-typing', targets: 5, words: WORDS_HARD },
-  ],
-  'say-it': [
-    { kind: 'say-it', targets: 4, items: SAY_IT_EASY },
-    { kind: 'say-it', targets: 5, items: SAY_IT_MID },
-    { kind: 'say-it', targets: 6, items: SAY_IT_HARD },
-  ],
-  'say-hello': [
-    { kind: 'say-hello', targets: 3, prompts: GREETINGS },
-    { kind: 'say-hello', targets: 5, prompts: GREETINGS },
-    { kind: 'say-hello', targets: 7, prompts: GREETINGS },
-  ],
+  keyboard: ramp(5, 18).map(
+    (targets, i): KeyboardLevel => ({
+      kind: 'keyboard',
+      targets,
+      alphabet: tier<readonly string[]>(i, LETTERS_EASY, LETTERS_MID, LETTERS_FULL),
+    }),
+  ),
+  'word-typing': ramp(3, 12).map(
+    (targets, i): WordTypingLevel => ({
+      kind: 'word-typing',
+      targets,
+      words: tier<readonly string[]>(i, WORDS_EASY, WORDS_MID, WORDS_HARD),
+    }),
+  ),
+  'say-it': ramp(3, 12).map(
+    (targets, i): SayItLevel => ({
+      kind: 'say-it',
+      targets,
+      items: tier<readonly SpeakItem[]>(i, SAY_IT_EASY, SAY_IT_MID, SAY_IT_HARD),
+    }),
+  ),
+  'say-hello': ramp(3, 12).map(
+    (targets): SayHelloLevel => ({ kind: 'say-hello', targets, prompts: GREETINGS }),
+  ),
 };
 
 /** Number of levels a game has. */

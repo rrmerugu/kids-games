@@ -21,7 +21,7 @@ export function LevelMapScreen(): React.JSX.Element {
         <ScreenHeader title={`${meta.emoji} ${meta.label}`} />
       }
     >
-      <div className="mx-auto grid h-full max-w-2xl content-center grid-cols-3 gap-5 p-6 sm:grid-cols-4">
+      <div className="mx-auto grid h-full max-w-2xl content-start overflow-y-auto grid-cols-3 gap-5 p-6 sm:grid-cols-4">
         {Array.from({ length: count }, (_, i) => {
           const level = i + 1;
           const unlocked = isUnlocked(level, best);

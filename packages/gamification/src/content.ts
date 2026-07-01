@@ -5,6 +5,7 @@ import type { ConvPrompt, SpeakItem } from '@kids/game-core';
 export const ANIMAL_FACES = [
   '🐶', '🐱', '🐰', '🦊', '🐼', '🐸', '🐵', '🦁',
   '🐯', '🐮', '🐷', '🐔', '🐧', '🐢', '🐙', '🦄',
+  '🐝', '🦋', '🐴', '🐨', '🐤', '🐬', '🦉', '🐞',
 ] as const;
 
 /** Letter sets the Keyboard Trainer draws from, easiest → fullest. */
@@ -144,6 +145,132 @@ export const GREETINGS: readonly ConvPrompt[] = [
       { emoji: '⚽', label: 'Here you go!', correct: true },
       { emoji: '🌝', label: 'Moon', correct: false },
       { emoji: '🧊', label: 'Ice', correct: false },
+    ],
+  },
+  {
+    speaker: '👩',
+    text: 'Good night!',
+    choices: [
+      { emoji: '🌙', label: 'Sweet dreams!', correct: true },
+      { emoji: '🌅', label: 'Morning', correct: false },
+      { emoji: '🍇', label: 'Grapes', correct: false },
+    ],
+  },
+  {
+    speaker: '🧑',
+    text: 'How old are you?',
+    choices: [
+      { emoji: '🖐️', label: "I'm five!", correct: true },
+      { emoji: '🌈', label: 'Rainbow', correct: false },
+      { emoji: '🚀', label: 'Rocket', correct: false },
+    ],
+  },
+  {
+    speaker: '🧓',
+    text: "I'm sorry!",
+    choices: [
+      { emoji: '😌', label: "That's okay!", correct: true },
+      { emoji: '🐛', label: 'Bug', correct: false },
+      { emoji: '🧀', label: 'Cheese', correct: false },
+    ],
+  },
+  {
+    speaker: '👧',
+    text: 'Do you want to play?',
+    choices: [
+      { emoji: '🎉', label: 'Yes please!', correct: true },
+      { emoji: '🥕', label: 'Carrot', correct: false },
+      { emoji: '🪨', label: 'Rock', correct: false },
+    ],
+  },
+  {
+    speaker: '🧑',
+    text: 'Are you hungry?',
+    choices: [
+      { emoji: '🍽️', label: "Yes, let's eat!", correct: true },
+      { emoji: '📚', label: 'Books', correct: false },
+      { emoji: '🚦', label: 'Lights', correct: false },
+    ],
+  },
+  {
+    speaker: '👨',
+    text: 'Happy birthday!',
+    choices: [
+      { emoji: '🎂', label: 'Thank you!', correct: true },
+      { emoji: '🧦', label: 'Socks', correct: false },
+      { emoji: '🌵', label: 'Cactus', correct: false },
+    ],
+  },
+  {
+    speaker: '🧒',
+    text: 'Can I have a turn?',
+    choices: [
+      { emoji: '🤝', label: 'Sure, here!', correct: true },
+      { emoji: '🐜', label: 'Ant', correct: false },
+      { emoji: '🔔', label: 'Bell', correct: false },
+    ],
+  },
+  {
+    speaker: '👩',
+    text: 'Look, it started to rain!',
+    choices: [
+      { emoji: '☂️', label: "Let's get an umbrella!", correct: true },
+      { emoji: '🍉', label: 'Melon', correct: false },
+      { emoji: '🎺', label: 'Trumpet', correct: false },
+    ],
+  },
+  {
+    speaker: '🧑',
+    text: 'Would you like some water?',
+    choices: [
+      { emoji: '💧', label: 'Yes, thank you!', correct: true },
+      { emoji: '🚲', label: 'Bike', correct: false },
+      { emoji: '🪁', label: 'Kite', correct: false },
+    ],
+  },
+  {
+    speaker: '🧓',
+    text: 'Have a nice day!',
+    choices: [
+      { emoji: '🌞', label: 'You too!', correct: true },
+      { emoji: '🥔', label: 'Potato', correct: false },
+      { emoji: '📎', label: 'Clip', correct: false },
+    ],
+  },
+  {
+    speaker: '👧',
+    text: 'I like your shoes!',
+    choices: [
+      { emoji: '😄', label: 'Thank you!', correct: true },
+      { emoji: '🦖', label: 'Dino', correct: false },
+      { emoji: '🧅', label: 'Onion', correct: false },
+    ],
+  },
+  {
+    speaker: '🧑',
+    text: 'Excuse me, may I pass?',
+    choices: [
+      { emoji: '🙂', label: 'Of course!', correct: true },
+      { emoji: '🍩', label: 'Donut', correct: false },
+      { emoji: '🧲', label: 'Magnet', correct: false },
+    ],
+  },
+  {
+    speaker: '👨',
+    text: 'Welcome!',
+    choices: [
+      { emoji: '🤗', label: 'Thank you!', correct: true },
+      { emoji: '🐌', label: 'Snail', correct: false },
+      { emoji: '🕯️', label: 'Candle', correct: false },
+    ],
+  },
+  {
+    speaker: '🧒',
+    text: 'Do you want to share?',
+    choices: [
+      { emoji: '🍪', label: 'Yes, thank you!', correct: true },
+      { emoji: '🚂', label: 'Train', correct: false },
+      { emoji: '🧤', label: 'Gloves', correct: false },
     ],
   },
 ];
