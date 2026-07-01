@@ -25,6 +25,7 @@ import { getLevel, nextLevel, type WordTypingLevel } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { NavIcons } from '../../components/NavIcons.js';
 import { HomeButton } from '../../components/HomeButton.js';
+import { TypingInput } from '../../components/TypingInput.js';
 import { GameAnalyticsButton } from '../../components/GameAnalyticsButton.js';
 
 interface Result {
@@ -276,6 +277,7 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
         }
       >
         <GameCanvas onReady={handleReady} />
+        <TypingInput />
       </GameLayout>
       <ResultDialog
         open={result !== null}
