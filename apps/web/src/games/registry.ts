@@ -13,20 +13,43 @@ export type GameCategory =
   | 'Aptitude'
   | 'Analytic';
 
+/**
+ * The broad intent behind a category, used for the home-page filter:
+ * - `learning` — acquiring a skill/content (letters, words, talking).
+ * - `focus` — training attention, memory and reasoning ("improve focus").
+ */
+export type FocusGroup = 'learning' | 'focus';
+
 export interface CategoryMeta {
   id: GameCategory;
   label: string;
   emoji: string;
+  focus: FocusGroup;
 }
 
 /** Display order + heading for each category on the home screen. */
 export const CATEGORIES: readonly CategoryMeta[] = [
-  { id: 'Memory', label: 'Memory', emoji: '🧠' },
-  { id: 'Typing', label: 'Typing', emoji: '⌨️' },
-  { id: 'Speaking', label: 'Speaking', emoji: '🗣️' },
-  { id: 'Conversation', label: 'Talking', emoji: '💬' },
-  { id: 'Aptitude', label: 'Thinking', emoji: '🧩' },
-  { id: 'Analytic', label: 'Puzzles', emoji: '🔍' },
+  { id: 'Memory', label: 'Memory', emoji: '🧠', focus: 'focus' },
+  { id: 'Typing', label: 'Typing', emoji: '⌨️', focus: 'learning' },
+  { id: 'Speaking', label: 'Speaking', emoji: '🗣️', focus: 'learning' },
+  { id: 'Conversation', label: 'Talking', emoji: '💬', focus: 'learning' },
+  { id: 'Aptitude', label: 'Thinking', emoji: '🧩', focus: 'focus' },
+  { id: 'Analytic', label: 'Puzzles', emoji: '🔍', focus: 'focus' },
+];
+
+/** The home-page filter chips. `all` shows every category. */
+export type HomeFilter = FocusGroup | 'all';
+
+export interface FilterMeta {
+  id: HomeFilter;
+  label: string;
+  emoji: string;
+}
+
+export const HOME_FILTERS: readonly FilterMeta[] = [
+  { id: 'all', label: 'All', emoji: '✨' },
+  { id: 'learning', label: 'Learning', emoji: '📚' },
+  { id: 'focus', label: 'Improve Focus', emoji: '🎯' },
 ];
 
 export interface GameMeta {

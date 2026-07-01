@@ -41,16 +41,18 @@ export function GameLayout({
   const visible = side !== 'off';
 
   const buddyColumn = visible ? (
-    <div className="z-10 flex w-[30%] shrink-0 flex-col items-center justify-center gap-3 overflow-hidden p-3">
+    // Phones: a compact bottom strip (row, capped height). Tablets/desktop (sm+):
+    // the full side panel beside the board, ~30% wide.
+    <div className="z-10 order-2 flex max-h-[32vh] w-full shrink-0 flex-row items-center justify-center gap-3 overflow-hidden p-2 sm:order-none sm:h-full sm:max-h-none sm:w-[30%] sm:flex-col sm:p-3">
       <Buddy latest={feedback.latest} reducedMotion={reducedMotion} character={character} />
       <MessageFeed events={feedback.events} tries={feedback.tries} reducedMotion={reducedMotion} />
       {onHelp && (
         <button
           type="button"
           onClick={onHelp}
-          className="w-full max-w-[14rem] rounded-2xl bg-amber-400 px-4 py-3 text-lg font-extrabold text-amber-950 shadow-lg transition-transform hover:scale-105 active:scale-95"
+          className="w-auto max-w-[14rem] shrink-0 rounded-2xl bg-amber-400 px-3 py-2 text-base font-extrabold text-amber-950 shadow-lg transition-transform hover:scale-105 active:scale-95 sm:w-full sm:px-4 sm:py-3 sm:text-lg"
         >
-          🙋 Help me!
+          🙋 <span className="hidden sm:inline">Help me!</span>
         </button>
       )}
     </div>
@@ -61,10 +63,11 @@ export function GameLayout({
       <Starfield reducedMotion={reducedMotion} />
       {/* Header spans the full width, above the game + Buddy row. */}
       {hud && <div className="z-10 shrink-0">{hud}</div>}
-      <div className="z-10 flex flex-1 overflow-hidden">
+      {/* Phones stack (game on top, Buddy strip below); sm+ sits them side by side. */}
+      <div className="z-10 flex min-h-0 flex-1 flex-col overflow-hidden sm:flex-row">
         {onLeft && buddyColumn}
         {/* Play area: transparent canvas fills the remaining space. */}
-        <div className="relative flex-1 overflow-hidden">{children}</div>
+        <div className="relative order-1 min-h-0 flex-1 overflow-hidden sm:order-none">{children}</div>
         {!onLeft && buddyColumn}
       </div>
     </div>

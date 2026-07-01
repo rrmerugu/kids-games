@@ -189,7 +189,7 @@ export function Buddy({
       <div
         key={latest?.id ?? 'idle'}
         style={{ animation: charAnim }}
-        className="select-none text-7xl drop-shadow-xl lg:text-8xl"
+        className="select-none text-5xl drop-shadow-xl sm:text-7xl lg:text-8xl"
       >
         {character}
       </div>

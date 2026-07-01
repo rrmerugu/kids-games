@@ -16,7 +16,9 @@
 
 /* Bigger root size so all rem-based text scales up for early readers (5+). */
 html {
-  font-size: 18px;
+  /* Fluid so phones don't overflow while tablets/desktop keep the large size:
+     ~15px on a narrow phone, clamped to 18px by ~iPad width (≥760px) and up. */
+  font-size: clamp(15px, 1.2vw + 10px, 18px);
 }
 
 /* A gentle "try again" wiggle for HTML choice buttons (canvas games use

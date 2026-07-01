@@ -29,28 +29,43 @@ export function GameHud({ gameName, title, onBack, onRestart, children, analytic
   const [confirmRestart, setConfirmRestart] = useState(false);
 
   return (
-    <div className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 px-3 py-2">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-1.5 px-2 py-1.5 sm:gap-2 sm:px-3 sm:py-2">
+      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
         {home}
-        <GlossyButton icon="⬅️" label="Back" color="sky" onClick={onBack} />
+        {/* Back/Restart show their label from sm up; on phones they're icon-only. */}
+        <GlossyButton
+          icon="⬅️"
+          ariaLabel="Back"
+          label={<span className="hidden sm:inline">Back</span>}
+          color="sky"
+          className="px-3 sm:px-5"
+          onClick={onBack}
+        />
         {gameName && (
-          <span className="inline-flex h-12 items-center rounded-full bg-gradient-to-b from-indigo-500 to-indigo-700 px-4 text-lg font-extrabold text-white shadow ring-1 ring-white/30 backdrop-blur">
+          <span className="hidden h-12 items-center rounded-full bg-gradient-to-b from-indigo-500 to-indigo-700 px-4 text-lg font-extrabold text-white shadow ring-1 ring-white/30 backdrop-blur sm:inline-flex">
             {gameName}
           </span>
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex h-12 items-center rounded-full bg-white/10 px-4 text-lg font-bold text-white shadow ring-1 ring-white/20 backdrop-blur">
+      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <span className="inline-flex h-9 items-center rounded-full bg-white/10 px-3 text-sm font-bold text-white shadow ring-1 ring-white/20 backdrop-blur sm:h-12 sm:px-4 sm:text-lg">
           {title}
         </span>
         {children}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         {analytics}
         {nav}
-        <GlossyButton icon="🔄" label="Restart" color="violet" onClick={() => setConfirmRestart(true)} />
+        <GlossyButton
+          icon="🔄"
+          ariaLabel="Restart"
+          label={<span className="hidden sm:inline">Restart</span>}
+          color="violet"
+          className="px-3 sm:px-5"
+          onClick={() => setConfirmRestart(true)}
+        />
       </div>
 
       <Dialog open={confirmRestart} onOpenChange={setConfirmRestart}>
