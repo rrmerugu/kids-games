@@ -51,7 +51,7 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
   const navigate = useNavigate();
   const def = getLevel('word-typing', level) as WordTypingLevel | undefined;
   const settings = useProgress((s) => s.settings);
-  const { feedback, cheer, retry, help, hint, clear } = useFeedback();
+  const { feedback, system, child, win, help, clear, summary } = useFeedback();
 
   const [result, setResult] = useState<Result | null>(null);
   const [hud, setHud] = useState({ words: 0, targets: def?.targets ?? 0 });
@@ -120,6 +120,7 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
         board.fit(90);
         paint(state);
         if (useProgress.getState().settings.sound) speakWord(word);
+        system('show', '📝', word); // 🤖 showed the word to type
       };
 
       const setup = (): void => {
@@ -146,10 +147,11 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
           won: true,
           durationMs: performance.now() - startRef.current,
           metrics: { misses: s.misses, letters, words: def.targets, hints: hintsRef.current },
+          actions: summary(),
         };
         const { sound } = useProgress.getState().settings;
         const outcome = useProgress.getState().recordRound(round);
-        cheer();
+        win();
         if (sound) playWin();
         setResult({
           won: true,
@@ -173,17 +175,19 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
         if (e.key.length !== 1) return;
         const s = stateRef.current;
         if (!s || s.phase !== 'input') return;
+        const expected = currentLetter(s);
         const out = typeLetter(s, e.key);
         stateRef.current = out.state;
         const { sound } = useProgress.getState().settings;
 
         if (out.kind === 'miss') {
-          retry();
+          child('type', 'bad', e.key.toUpperCase()); // 🧒 typed the wrong letter
           if (sound) playError();
           board.shake(`letter-${s.letterIndex}`);
           return;
         }
 
+        child('type', 'good', expected ?? ''); // 🧒 typed the right letter
         if (sound) playSuccess();
         const justTyped = s.letterIndex; // index within the word we just completed a letter of
 
@@ -210,7 +214,6 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
         // kind === 'word' — celebrate briefly, then show the next word.
         const wordsDone = out.state.wordIndex;
         setHud((h) => ({ ...h, words: wordsDone }));
-        cheer();
         window.setTimeout(() => {
           if (stateRef.current === out.state) drawWord(out.state);
         }, 600);
@@ -229,9 +232,7 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
         const s = stateRef.current;
         if (!s || s.phase !== 'input') return;
         const letter = currentLetter(s);
-        const word = currentWord(s);
         if (!letter) return;
-        hint(`Spell ${word}. Press the ${letter} key! 👇`);
         if (useProgress.getState().settings.sound) speakLetter(letter);
         if (!reduced()) board.pulse(`letter-${s.letterIndex}`);
       };
@@ -243,7 +244,7 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
         stopSpeech();
       };
     },
-    [def, level, cheer, retry, help, hint, clear],
+    [def, level, system, child, win, help, summary, clear],
   );
 
   if (!def) return <Navigate to="/" replace />;
@@ -283,6 +284,7 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
         onPlayAgain={() => restartRef.current()}
         onNext={next ? () => navigate(`/play/word-typing/${next}`) : undefined}
         onHome={() => navigate('/')}
+        analytics={<GameAnalyticsButton gameId="word-typing" />}
       />
     </AppShell>
   );

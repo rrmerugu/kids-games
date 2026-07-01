@@ -9,8 +9,9 @@ export {
   useFeedback,
   type BuddyProps,
   type BuddyPosition,
-  type FeedbackKind,
-  type FeedbackMessage,
+  type EventActor,
+  type EventOutcome,
+  type GameEvent,
   type FeedbackState,
 } from './Buddy.js';
 export { BuddyPanel, type BuddyPanelProps } from './BuddyPanel.js';

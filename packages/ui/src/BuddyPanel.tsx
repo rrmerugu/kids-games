@@ -31,7 +31,7 @@ export function BuddyPanel({
       <Starfield reducedMotion={reducedMotion} />
       <div className="z-10 flex flex-col items-center gap-3">
         <Buddy latest={null} reducedMotion={reducedMotion} character={character} name={name} />
-        <MessageFeed messages={[]} reducedMotion={reducedMotion} />
+        <MessageFeed events={[]} reducedMotion={reducedMotion} />
       </div>
     </div>
   );

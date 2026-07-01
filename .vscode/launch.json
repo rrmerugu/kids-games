@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Starts the web app's Vite dev server with --host so the app is reachable
+      // from phones/iPads on the same Wi-Fi (look for the "Network:" URL printed
+      // in the terminal). Runs in the integrated terminal with HMR.
+      "name": "Dev server (--host)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm --filter @kids/web exec vite --host",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

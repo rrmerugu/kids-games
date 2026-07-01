@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { BarChart3, X } from 'lucide-react';
 import type { GameId } from '@kids/game-core';
-import { computeStats, formatDuration } from '@kids/gamification';
+import { actionLabel, computeActionStats, computeStats, formatDuration } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { IconButton } from './IconButton.js';
 import { gameMeta } from '../games/registry.js';
@@ -28,10 +28,9 @@ export function GameAnalyticsButton({ gameId }: { gameId: GameId }): React.JSX.E
   const sessions = useProgress((s) => s.sessions);
   const meta = gameMeta(gameId);
 
-  const stats = useMemo(
-    () => computeStats(sessions.filter((s) => s.gameId === gameId), Date.now()),
-    [sessions, gameId],
-  );
+  const mine = useMemo(() => sessions.filter((s) => s.gameId === gameId), [sessions, gameId]);
+  const stats = useMemo(() => computeStats(mine, Date.now()), [mine]);
+  const actionStats = useMemo(() => computeActionStats(mine), [mine]);
   const maxDayMs = Math.max(1, ...stats.last7Days.map((d) => d.timeMs));
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export function GameAnalyticsButton({ gameId }: { gameId: GameId }): React.JSX.E
       {open &&
         createPortal(
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 p-4 backdrop-blur-md"
+          className="pointer-events-auto fixed inset-0 z-[100] flex items-center justify-center bg-black/30 p-4 backdrop-blur-md"
           onClick={() => setOpen(false)}
         >
           <div
@@ -78,6 +77,34 @@ export function GameAnalyticsButton({ gameId }: { gameId: GameId }): React.JSX.E
                   <Stat label="tries" value={`${stats.totalRetries}`} />
                   <Stat label="stars" value={`⭐${stats.totalStars}`} />
                 </div>
+
+                {actionStats.length > 0 && (
+                  <div className="space-y-1.5">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-white/60">
+                      By action
+                    </div>
+                    {actionStats.map((a) => {
+                      const { icon, label } = actionLabel(a.type);
+                      return (
+                        <div
+                          key={a.type}
+                          className="flex items-center gap-2 rounded-2xl bg-white/5 px-3 py-2 ring-1 ring-white/10"
+                        >
+                          <span className="text-xl" aria-hidden>{icon}</span>
+                          <span className="w-20 shrink-0 text-sm font-semibold">{label}</span>
+                          <span className="font-extrabold text-emerald-300">
+                            ✅ {Math.round(a.accuracy * 100)}%
+                          </span>
+                          {a.avgMs > 0 && (
+                            <span className="ml-auto text-sm text-white/70">
+                              ⚡ {(a.avgMs / 1000).toFixed(1)}s
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 <div className="space-y-1.5">
                   <div className="text-xs font-semibold uppercase tracking-wide text-white/60">

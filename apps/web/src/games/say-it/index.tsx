@@ -41,7 +41,7 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
   const def = getLevel('say-it', level) as SayItLevel | undefined;
   const settings = useProgress((s) => s.settings);
-  const { feedback, cheer, help, hint, clear } = useFeedback();
+  const { feedback, system, child, win, help, clear, summary } = useFeedback();
 
   const [result, setResult] = useState<Result | null>(null);
   const [view, setView] = useState({ word: '', index: 0, targets: def?.targets ?? 0 });
@@ -78,7 +78,10 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
         board.setBorder('card', CARD_BORDER, 8);
         board.fit(110);
         setView({ word: item.word, index: state.index, targets: def.targets });
-        if (speak && sound()) speakWord(item.word);
+        if (speak) {
+          if (sound()) speakWord(item.word);
+          system('show', item.emoji, item.word); // 🤖 showed a picture-word to say
+        }
       };
 
       const setup = (): void => {
@@ -99,9 +102,10 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
           won: true,
           durationMs: performance.now() - startRef.current,
           metrics: { repeats: s.repeats, items: def.targets },
+          actions: summary(),
         };
         const outcome = useProgress.getState().recordRound(round);
-        cheer();
+        win();
         if (sound()) playWin();
         setResult({
           won: true,
@@ -130,11 +134,12 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
       saidRef.current = () => {
         const s = stateRef.current;
         if (!s || s.phase !== 'speak') return;
+        const item = currentItem(s);
         const out = confirmSaid(s);
         stateRef.current = out.state;
+        child('say', 'good', '🗣️', item?.word); // 🧒 said the word (practice, always good)
         if (sound()) playSuccess();
         if (!reduced()) board.pulse('card');
-        cheer();
         if (out.kind === 'won') {
           window.setTimeout(finish, 450);
           return;
@@ -150,7 +155,6 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
         if (!s || s.phase !== 'speak') return;
         const item = currentItem(s);
         if (!item) return;
-        hint(`Say it: ${item.word} 🗣️`);
         if (sound()) speakPhrase(`Say ${item.word}`);
       };
 
@@ -164,7 +168,7 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
         stopSpeech();
       };
     },
-    [def, level, cheer, help, hint, clear],
+    [def, level, system, child, win, help, summary, clear],
   );
 
   if (!def) return <Navigate to="/" replace />;
@@ -224,6 +228,7 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
         onPlayAgain={() => restartRef.current()}
         onNext={next ? () => navigate(`/play/say-it/${next}`) : undefined}
         onHome={() => navigate('/')}
+        analytics={<GameAnalyticsButton gameId="say-it" />}
       />
     </AppShell>
   );

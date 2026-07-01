@@ -43,11 +43,20 @@ interface Result {
   newStickers: string[];
 }
 
+/** Timeline glyph + recognisable word per pad index (matches the canvas colours). */
+const PAD_VIEW = [
+  { sq: '🟩', word: 'GREEN' },
+  { sq: '🟥', word: 'RED' },
+  { sq: '🟦', word: 'BLUE' },
+  { sq: '🟨', word: 'YELLOW' },
+] as const;
+const padView = (pad: number): { sq: string; word: string } => PAD_VIEW[pad % PAD_VIEW.length]!;
+
 export function SimonScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
   const def = getLevel('simon', level) as SimonLevel | undefined;
   const settings = useProgress((s) => s.settings);
-  const { feedback, cheer, retry, help, hint, clear } = useFeedback();
+  const { feedback, system, child, win, help, clear, summary } = useFeedback();
 
   const [result, setResult] = useState<Result | null>(null);
   const [hud, setHud] = useState({ len: 0, target: def?.targetLength ?? 0 });
@@ -88,6 +97,8 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
           after(idx * stepMs, () => {
             flash(pad, true);
             if (sound) playPad(pad);
+            const v = padView(pad);
+            system('show', v.sq, v.word); // 🤖 lit this colour — child should watch
           });
           after(idx * stepMs + litMs, () => flash(pad, false));
         });
@@ -143,11 +154,12 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
             hints: replaysRef.current,
             mistakes: stateRef.current?.mistakes ?? 0,
           },
+          actions: summary(),
         };
         const { sound } = useProgress.getState().settings;
         const outcome = useProgress.getState().recordRound(round);
         if (won) {
-          cheer();
+          win();
           if (sound) playWin();
         }
         setResult({
@@ -166,21 +178,22 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         const out = pressPad(s, pad);
         stateRef.current = out.state;
         const { sound } = useProgress.getState().settings;
+        const v = padView(pad);
 
         if (out.kind === 'wrong') {
-          retry();
+          child('tap', 'bad', v.sq, v.word); // 🧒 tapped the wrong colour
           if (sound) playError();
           board.shake(`pad${pad}`);
           after(600, () => finish(false));
           return;
         }
 
+        child('tap', 'good', v.sq, v.word); // 🧒 matched a colour
         flash(pad, true);
         if (sound) playPad(pad);
         after(220, () => flash(pad, false));
 
         if (out.kind === 'round-complete') {
-          cheer();
           if (sound) playSuccess();
           after(520, () => {
             stateRef.current = extendSequence(stateRef.current!, rngRef.current);
@@ -211,7 +224,7 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         timeouts.forEach((t) => clearTimeout(t));
       };
     },
-    [def, level, cheer, retry, clear],
+    [def, level, system, child, win, summary, clear],
   );
 
   if (!def) return <Navigate to="/" replace />;
@@ -225,7 +238,6 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         reducedMotion={settings.reducedMotion}
         onHelp={() => {
           help();
-          hint('Watch the colours again! 👀');
           showAgainRef.current();
         }}
         idleMessage={
@@ -270,6 +282,7 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         onPlayAgain={() => restartRef.current()}
         onNext={next ? () => navigate(`/play/simon/${next}`) : undefined}
         onHome={() => navigate('/')}
+        analytics={<GameAnalyticsButton gameId="simon" />}
       />
     </AppShell>
   );

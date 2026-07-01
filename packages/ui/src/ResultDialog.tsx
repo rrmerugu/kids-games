@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@invana/ui';
 import { formatDuration, stickerById } from '@kids/gamification';
 import { GlossyButton } from './GlossyButton.js';
@@ -15,6 +16,8 @@ export interface ResultDialogProps {
   /** Omit to hide the "Next" button (e.g. last level, or a loss). */
   onNext?: () => void;
   onHome: () => void;
+  /** Per-game analytics control, shown top-right (e.g. <GameAnalyticsButton/>). */
+  analytics?: ReactNode;
 }
 
 /** End-of-round celebration (or gentle retry prompt on a loss). */
@@ -27,12 +30,15 @@ export function ResultDialog({
   onPlayAgain,
   onNext,
   onHome,
+  analytics,
 }: ResultDialogProps): React.JSX.Element {
   return (
     <Dialog open={open}>
       {/* Force dark theme to match the space game scene, and hide the (non-functional)
           built-in close button via the direct-child-button selector. */}
-      <DialogContent className="dark rounded-3xl text-center sm:max-w-sm [&>button]:hidden">
+      <DialogContent className="dark relative rounded-3xl text-center sm:max-w-sm [&>button]:hidden">
+
+        {analytics && <div className="absolute right-4 top-4">{analytics}</div>}
 
         <DialogHeader>
           <DialogTitle className="text-center text-3xl font-extrabold">

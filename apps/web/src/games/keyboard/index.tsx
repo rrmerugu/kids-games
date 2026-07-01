@@ -37,7 +37,7 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
   const navigate = useNavigate();
   const def = getLevel('keyboard', level) as KeyboardLevel | undefined;
   const settings = useProgress((s) => s.settings);
-  const { feedback, cheer, retry, help, hint, clear } = useFeedback();
+  const { feedback, system, child, win, help, clear, summary } = useFeedback();
 
   const [result, setResult] = useState<Result | null>(null);
   const [hud, setHud] = useState({ index: 0, targets: def?.targets ?? 0 });
@@ -80,6 +80,7 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         });
         board.fit(140);
         setHud({ index: 0, targets: def.targets });
+        system('show', currentTarget(state) ?? ''); // 🤖 showed the letter to press
       };
 
       const finish = (): void => {
@@ -90,10 +91,11 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
           won: true,
           durationMs: performance.now() - startRef.current,
           metrics: { misses: s.misses, targets: def.targets, hints: hintsRef.current },
+          actions: summary(),
         };
         const { sound } = useProgress.getState().settings;
         const outcome = useProgress.getState().recordRound(round);
-        cheer();
+        win();
         if (sound) playWin();
         setResult({
           won: true,
@@ -108,16 +110,18 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         if (e.key.length !== 1) return;
         const s = stateRef.current;
         if (!s || s.phase !== 'input') return;
+        const target = currentTarget(s);
         const out = pressKey(s, e.key);
         stateRef.current = out.state;
         const { sound } = useProgress.getState().settings;
 
         if (out.kind === 'miss') {
-          retry();
+          child('type', 'bad', e.key.toUpperCase()); // 🧒 pressed the wrong key
           if (sound) playError();
           board.shake('target');
           return;
         }
+        child('type', 'good', target ?? ''); // 🧒 pressed the right letter
         if (sound) playSuccess();
         if (!useProgress.getState().settings.reducedMotion) board.pulse('target');
         setHud((h) => ({ ...h, index: out.state.index }));
@@ -126,7 +130,9 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
           drawTarget('🎉');
           window.setTimeout(finish, 350);
         } else {
-          drawTarget(currentTarget(out.state) ?? '');
+          const nextTarget = currentTarget(out.state) ?? '';
+          drawTarget(nextTarget);
+          system('show', nextTarget); // 🤖 showed the next letter
         }
       };
 
@@ -144,7 +150,6 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         if (!s || s.phase !== 'input') return;
         const target = currentTarget(s);
         if (!target) return;
-        hint(`Press the ${target} key! 👇`);
         if (useProgress.getState().settings.sound) speakLetter(target);
         if (!useProgress.getState().settings.reducedMotion) board.pulse('target');
       };
@@ -156,7 +161,7 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         stopSpeech();
       };
     },
-    [def, level, cheer, retry, help, hint, clear],
+    [def, level, system, child, win, help, summary, clear],
   );
 
   if (!def) return <Navigate to="/" replace />;
@@ -197,6 +202,7 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         onPlayAgain={() => restartRef.current()}
         onNext={next ? () => navigate(`/play/keyboard/${next}`) : undefined}
         onHome={() => navigate('/')}
+        analytics={<GameAnalyticsButton gameId="keyboard" />}
       />
     </AppShell>
   );

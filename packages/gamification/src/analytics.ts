@@ -4,7 +4,7 @@
  * dashboard renders {@link computeStats} over them. Kept pure (takes `now`) so
  * the day-bucketing is deterministic and testable.
  */
-import type { GameId } from '@kids/game-core';
+import type { ActionStat, GameId } from '@kids/game-core';
 
 /** One finished round, persisted for parent stats. */
 export interface SessionRecord {
@@ -21,6 +21,71 @@ export interface SessionRecord {
   stars: number;
   /** Epoch milliseconds when the round finished. */
   at: number;
+  /** Per-action-type breakdown captured from Buddy's event timeline. */
+  actions?: readonly ActionStat[];
+}
+
+/** Aggregated accuracy + speed for one action type, ready to display. */
+export interface ActionTypeStat {
+  type: string;
+  correct: number;
+  wrong: number;
+  /** correct + wrong. */
+  total: number;
+  /** 0–1. */
+  accuracy: number;
+  /** Average response time in ms (0 if never measured). */
+  avgMs: number;
+}
+
+/** Icon + short label for each known action type (for the analytics popup). */
+export const ACTION_LABELS: Record<string, { icon: string; label: string }> = {
+  tap: { icon: '🎨', label: 'Colors' },
+  type: { icon: '⌨️', label: 'Letters' },
+  reply: { icon: '💬', label: 'Replies' },
+  say: { icon: '🗣️', label: 'Words' },
+  pair: { icon: '🃏', label: 'Pairs' },
+};
+
+export function actionLabel(type: string): { icon: string; label: string } {
+  return ACTION_LABELS[type] ?? { icon: '•', label: type };
+}
+
+/**
+ * Merge the per-round {@link ActionStat}s across sessions into per-type
+ * accuracy + average response time. Pure; newest order doesn't matter.
+ */
+export function computeActionStats(sessions: readonly SessionRecord[]): ActionTypeStat[] {
+  const map = new Map<string, ActionStat>();
+  for (const s of sessions) {
+    for (const a of s.actions ?? []) {
+      const cur = map.get(a.type) ?? {
+        type: a.type,
+        correct: 0,
+        wrong: 0,
+        reactionMsTotal: 0,
+        reactionCount: 0,
+      };
+      cur.correct += a.correct;
+      cur.wrong += a.wrong;
+      cur.reactionMsTotal += a.reactionMsTotal;
+      cur.reactionCount += a.reactionCount;
+      map.set(a.type, cur);
+    }
+  }
+  return [...map.values()]
+    .map((a): ActionTypeStat => {
+      const total = a.correct + a.wrong;
+      return {
+        type: a.type,
+        correct: a.correct,
+        wrong: a.wrong,
+        total,
+        accuracy: total ? a.correct / total : 0,
+        avgMs: a.reactionCount ? Math.round(a.reactionMsTotal / a.reactionCount) : 0,
+      };
+    })
+    .sort((x, y) => y.total - x.total);
 }
 
 export interface PerGameStat {

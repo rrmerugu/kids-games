@@ -84,6 +84,7 @@ export const useProgress = create<ProgressStore>()(
           hints: result.metrics.hints ?? 0,
           stars,
           at: Date.now(),
+          ...(result.actions ? { actions: result.actions } : {}),
         };
         const sessions = [...state.sessions, session].slice(-MAX_SESSIONS);
 

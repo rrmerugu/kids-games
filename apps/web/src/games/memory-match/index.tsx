@@ -42,7 +42,7 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
   const navigate = useNavigate();
   const def = getLevel('memory-match', level) as MemoryMatchLevel | undefined;
   const settings = useProgress((s) => s.settings);
-  const { feedback, cheer, retry, help, hint, clear } = useFeedback();
+  const { feedback, child, win, help, clear, summary } = useFeedback();
 
   const [result, setResult] = useState<Result | null>(null);
   const [hud, setHud] = useState({ matched: 0, pairs: def?.pairs ?? 0 });
@@ -126,11 +126,12 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
           won,
           durationMs: performance.now() - startRef.current,
           metrics: { mismatches: s.mismatches, pairs: def.pairs, hints: hintsRef.current },
+          actions: summary(),
         };
         const { sound } = useProgress.getState().settings;
         const outcome = useProgress.getState().recordRound(round);
         if (won) {
-          cheer();
+          win();
           if (sound) playWin();
         }
         setResult({
@@ -153,7 +154,7 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
           reveal(id);
         } else if (out.kind === 'match') {
           reveal(id);
-          cheer();
+          child('pair', 'good', faceOf(id)); // 🧒 found a matching pair
           if (sound) playSuccess();
           setHud((h) => ({ ...h, matched: out.state.matchedPairs }));
           const reduced = useProgress.getState().settings.reducedMotion;
@@ -167,7 +168,7 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
         } else {
           // mismatch — show both faces with a red border, then flip back.
           reveal(id);
-          retry();
+          child('pair', 'bad', faceOf(id)); // 🧒 the two cards didn't match
           if (sound) playError();
           after(320, () => out.pair.forEach((pid) => board.setBorder(pid, BORDER_WRONG)));
           after(1300, () => {
@@ -188,21 +189,14 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
         help();
         hintsRef.current += 1;
         const s = stateRef.current;
-        if (!s || s.flipped.length >= 2) {
-          hint('Finish your two cards first! 🙂');
-          return;
-        }
+        if (!s || s.flipped.length >= 2) return;
         const byFace = new Map<string, string[]>();
         for (const c of s.cards) {
           if (c.matched || s.flipped.includes(c.id)) continue;
           byFace.set(c.face, [...(byFace.get(c.face) ?? []), c.id]);
         }
         const pair = [...byFace.values()].find((ids) => ids.length >= 2);
-        if (!pair) {
-          hint('Tap a card to start! 👆');
-          return;
-        }
-        hint('Look at the glowing cards! ✨');
+        if (!pair) return;
         const [a, b] = pair as [string, string];
         reveal(a);
         reveal(b);
@@ -225,7 +219,7 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
         timeouts.forEach((t) => clearTimeout(t));
       };
     },
-    [def, level, cheer, retry, help, hint, clear],
+    [def, level, child, win, help, summary, clear],
   );
 
   if (!def) return <Navigate to="/" replace />;
@@ -266,6 +260,7 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
         onPlayAgain={() => restartRef.current()}
         onNext={next ? () => navigate(`/play/memory-match/${next}`) : undefined}
         onHome={() => navigate('/')}
+        analytics={<GameAnalyticsButton gameId="memory-match" />}
       />
     </AppShell>
   );

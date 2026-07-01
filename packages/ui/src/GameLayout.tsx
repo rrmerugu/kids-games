@@ -29,7 +29,8 @@ export function GameLayout({
   side,
   feedback,
   reducedMotion,
-  idleMessage,
+  // idleMessage is accepted for back-compat but no longer rendered: the event
+  // timeline is icon-based (no sentences) and Buddy speaks his encouragement.
   character,
   onHelp,
   hud,
@@ -42,11 +43,7 @@ export function GameLayout({
   const buddyColumn = visible ? (
     <div className="z-10 flex w-[30%] shrink-0 flex-col items-center justify-center gap-3 overflow-hidden p-3">
       <Buddy latest={feedback.latest} reducedMotion={reducedMotion} character={character} />
-      <MessageFeed
-        messages={feedback.messages}
-        reducedMotion={reducedMotion}
-        idleMessage={idleMessage}
-      />
+      <MessageFeed events={feedback.events} tries={feedback.tries} reducedMotion={reducedMotion} />
       {onHelp && (
         <button
           type="button"

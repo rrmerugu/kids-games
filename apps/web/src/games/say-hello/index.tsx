@@ -27,7 +27,7 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
   const navigate = useNavigate();
   const def = getLevel('say-hello', level) as SayHelloLevel | undefined;
   const settings = useProgress((s) => s.settings);
-  const { feedback, cheer, retry, help, hint, clear } = useFeedback();
+  const { feedback, system, child, win, help, clear, summary } = useFeedback();
 
   const [result, setResult] = useState<Result | null>(null);
   const [state, setState] = useState<SayHelloState | null>(null);
@@ -59,7 +59,9 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
   const prompt = state ? currentPrompt(state) : undefined;
   const turnKey = state ? state.index : -1;
   useEffect(() => {
-    if (prompt && useProgress.getState().settings.sound) speakPhrase(prompt.text);
+    if (!prompt) return;
+    if (useProgress.getState().settings.sound) speakPhrase(prompt.text);
+    system('ask', prompt.speaker); // 🤖 the character said a line
     // Speak once per turn; prompt.text identifies the turn.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turnKey]);
@@ -72,9 +74,11 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
     const out = choose(state, i);
     const sound = useProgress.getState().settings.sound;
 
+    const c = prompt?.choices[i];
+
     if (out.kind === 'wrong') {
       setState(out.state);
-      retry();
+      child('reply', 'bad', c?.emoji ?? '🙂', c?.label); // 🧒 picked the wrong reply
       if (sound) playError();
       setWrongIdx(i);
       window.setTimeout(() => setWrongIdx(null), 450);
@@ -82,8 +86,8 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
     }
 
     // Correct — celebrate, then advance or finish.
+    child('reply', 'good', c?.emoji ?? '🙂', c?.label); // 🧒 picked the right reply
     if (sound) playSuccess();
-    cheer();
     setLocked(true);
     setRevealIdx(i);
 
@@ -94,8 +98,10 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
         won: true,
         durationMs: performance.now() - startRef.current,
         metrics: { misses: out.state.misses, turns: out.state.prompts.length },
+        actions: summary(),
       };
       const outcome = useProgress.getState().recordRound(round);
+      win();
       window.setTimeout(() => {
         if (sound) playWin();
         setResult({
@@ -119,7 +125,6 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
     help();
     if (!prompt) return;
     const correct = prompt.choices.findIndex((c) => c.correct);
-    hint('Listen again and pick the friendly reply! 👂');
     if (useProgress.getState().settings.sound) speakPhrase(prompt.text);
     setRevealIdx(correct);
     window.setTimeout(() => setRevealIdx((r) => (r === correct ? null : r)), 1200);
@@ -196,6 +201,7 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
         onPlayAgain={setup}
         onNext={next ? () => navigate(`/play/say-hello/${next}`) : undefined}
         onHome={() => navigate('/')}
+        analytics={<GameAnalyticsButton gameId="say-hello" />}
       />
     </AppShell>
   );
