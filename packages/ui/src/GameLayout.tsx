@@ -1,7 +1,31 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { cn } from '@invana/ui';
 import { Buddy, type BuddyPosition, type FeedbackState } from './Buddy.js';
 import { MessageFeed } from './MessageFeed.js';
 import { Starfield } from './Starfield.js';
+
+/**
+ * Stack the scene (game on top, Buddy as a bottom strip) only on a narrow
+ * *portrait* screen — i.e. a phone held upright. Any landscape screen (laptops,
+ * Macs, iPads, a TV, a phone turned sideways) keeps the side-by-side layout, so
+ * a small or zoomed desktop window still gets the centred board, not the phone
+ * layout. Orientation-based, not a blanket width breakpoint.
+ */
+const STACK_QUERY = '(max-width: 639px) and (orientation: portrait)';
+
+function useStackedLayout(): boolean {
+  const [stacked, setStacked] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(STACK_QUERY).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(STACK_QUERY);
+    const update = (): void => setStacked(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return stacked;
+}
 
 export interface GameLayoutProps {
   /** Which side Buddy sits on, or `off` to hide him. */
@@ -39,20 +63,29 @@ export function GameLayout({
   // Tolerant of legacy values: hide on 'off', left on 'left', else right.
   const onLeft = side === 'left';
   const visible = side !== 'off';
+  const stacked = useStackedLayout();
 
   const buddyColumn = visible ? (
-    // Phones: a compact bottom strip (row, capped height). Tablets/desktop (sm+):
-    // the full side panel beside the board, ~30% wide.
-    <div className="z-10 order-2 flex max-h-[32vh] w-full shrink-0 flex-row items-center justify-center gap-3 overflow-hidden p-2 sm:order-none sm:h-full sm:max-h-none sm:w-[30%] sm:flex-col sm:p-3">
+    // Portrait phone: a compact bottom strip (row, capped height). Everywhere
+    // else: the full side panel beside the board, ~30% wide.
+    <div
+      className={cn(
+        'z-10 flex shrink-0 items-center justify-center gap-3 overflow-hidden',
+        stacked ? 'order-2 max-h-[32vh] w-full flex-row p-2' : 'h-full w-[30%] flex-col p-3',
+      )}
+    >
       <Buddy latest={feedback.latest} reducedMotion={reducedMotion} character={character} />
       <MessageFeed events={feedback.events} tries={feedback.tries} reducedMotion={reducedMotion} />
       {onHelp && (
         <button
           type="button"
           onClick={onHelp}
-          className="w-auto max-w-[14rem] shrink-0 rounded-2xl bg-amber-400 px-3 py-2 text-base font-extrabold text-amber-950 shadow-lg transition-transform hover:scale-105 active:scale-95 sm:w-full sm:px-4 sm:py-3 sm:text-lg"
+          className={cn(
+            'max-w-[14rem] rounded-2xl bg-amber-400 font-extrabold text-amber-950 shadow-lg transition-transform hover:scale-105 active:scale-95',
+            stacked ? 'w-auto shrink-0 px-3 py-2 text-base' : 'w-full px-4 py-3 text-lg',
+          )}
         >
-          🙋 <span className="hidden sm:inline">Help me!</span>
+          🙋{!stacked && <span> Help me!</span>}
         </button>
       )}
     </div>
@@ -63,11 +96,12 @@ export function GameLayout({
       <Starfield reducedMotion={reducedMotion} />
       {/* Header spans the full width, above the game + Buddy row. */}
       {hud && <div className="z-10 shrink-0">{hud}</div>}
-      {/* Phones stack (game on top, Buddy strip below); sm+ sits them side by side. */}
-      <div className="z-10 flex min-h-0 flex-1 flex-col overflow-hidden sm:flex-row">
+      {/* Portrait phone stacks (game on top, Buddy strip below); everything else
+          sits them side by side with the board centred in its column. */}
+      <div className={cn('z-10 flex min-h-0 flex-1 overflow-hidden', stacked ? 'flex-col' : 'flex-row')}>
         {onLeft && buddyColumn}
         {/* Play area: transparent canvas fills the remaining space. */}
-        <div className="relative order-1 min-h-0 flex-1 overflow-hidden sm:order-none">{children}</div>
+        <div className={cn('relative min-h-0 flex-1 overflow-hidden', stacked && 'order-1')}>{children}</div>
         {!onLeft && buddyColumn}
       </div>
     </div>
