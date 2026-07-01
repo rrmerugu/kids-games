@@ -263,6 +263,7 @@ export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Eleme
         onNext={next ? () => navigate(`/play/memory-match/${next}`) : undefined}
         onHome={() => navigate('/')}
         analytics={<GameAnalyticsButton gameId="memory-match" />}
+        reducedMotion={settings.reducedMotion}
       />
     </AppShell>
   );

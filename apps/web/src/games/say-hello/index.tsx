@@ -204,6 +204,7 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
         onNext={next ? () => navigate(`/play/say-hello/${next}`) : undefined}
         onHome={() => navigate('/')}
         analytics={<GameAnalyticsButton gameId="say-hello" />}
+        reducedMotion={settings.reducedMotion}
       />
     </AppShell>
   );

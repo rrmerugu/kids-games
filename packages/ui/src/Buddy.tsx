@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { cn } from '@invana/ui';
 import type { ActionStat } from '@kids/game-core';
+import { Confetti } from './Confetti.js';
 
 /** Which side Buddy sits on, or `off`. Mirrors storage. */
 export type BuddyPosition = 'right' | 'left' | 'off';
@@ -138,6 +140,8 @@ const BUDDY_KEYFRAMES = `
 @keyframes kg-buddy-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes kg-buddy-cheer { 0% { transform: scale(1); } 30% { transform: scale(1.25) rotate(-8deg); } 60% { transform: scale(1.12) rotate(8deg); } 100% { transform: scale(1); } }
 @keyframes kg-buddy-wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(10deg); } }
+@keyframes kg-buddy-clap { 0%,100% { transform: rotate(0) scale(1); } 25% { transform: rotate(-20deg) scale(1.15); } 50% { transform: rotate(16deg) scale(1.05); } 75% { transform: rotate(-12deg) scale(1.12); } }
+@keyframes kg-bubble-pop { 0% { transform: scale(0) translateY(8px); opacity: 0; } 60% { transform: scale(1.15) translateY(0); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 `;
 
 /** How long Buddy reacts before drifting back to his idle float. */
@@ -183,15 +187,54 @@ export function Buddy({
         ? 'kg-buddy-wiggle .5s ease-in-out'
         : 'kg-buddy-float 3.5s ease-in-out infinite';
 
+  // A correct answer (or a round win) rains a quick confetti burst around Buddy.
+  const goodTrigger = latest?.outcome === 'good' ? latest.id : null;
+
   return (
     <div className="flex flex-col items-center gap-1" aria-hidden="true">
       <style>{BUDDY_KEYFRAMES}</style>
-      <div
-        key={latest?.id ?? 'idle'}
-        style={{ animation: charAnim }}
-        className="select-none text-5xl drop-shadow-xl sm:text-7xl lg:text-8xl"
-      >
-        {character}
+      <div className="relative">
+        {/* A cheerful pop of confetti on every correct answer. */}
+        <Confetti trigger={goodTrigger} variant="burst" reducedMotion={reducedMotion} />
+
+        {/* Yaay :) / Naay :( speech bubble from Buddy's top-right corner. */}
+        {reacting && (
+          <div
+            key={`bubble-${latest?.id ?? ''}`}
+            style={{ animation: reducedMotion ? undefined : 'kg-bubble-pop .35s ease-out both' }}
+            className={cn(
+              'absolute -right-8 -top-6 z-30 select-none whitespace-nowrap rounded-3xl px-5 py-3 text-2xl font-extrabold shadow-xl sm:text-3xl',
+              reacting === 'good' ? 'bg-emerald-400 text-emerald-950' : 'bg-amber-300 text-amber-950',
+            )}
+          >
+            {reacting === 'good' ? 'Yaay :)' : 'Naay :('}
+            {/* little pointer tail toward Buddy */}
+            <span
+              className={cn(
+                'absolute -bottom-1.5 left-5 h-5 w-5 rotate-45',
+                reacting === 'good' ? 'bg-emerald-400' : 'bg-amber-300',
+              )}
+            />
+          </div>
+        )}
+
+        <div
+          key={latest?.id ?? 'idle'}
+          style={{ animation: charAnim }}
+          className="select-none text-5xl drop-shadow-xl sm:text-7xl lg:text-8xl"
+        >
+          {character}
+        </div>
+
+        {/* Buddy claps to celebrate a correct answer. */}
+        {reacting === 'good' && (
+          <span
+            style={{ animation: reducedMotion ? undefined : 'kg-buddy-clap .45s ease-in-out 2' }}
+            className="absolute -bottom-1 -left-3 z-30 select-none text-2xl drop-shadow sm:text-3xl"
+          >
+            👏
+          </span>
+        )}
       </div>
       <span className="text-xs font-semibold uppercase tracking-wide text-indigo-200/80">{name}</span>
     </div>

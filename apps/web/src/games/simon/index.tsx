@@ -285,6 +285,7 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
         onNext={next ? () => navigate(`/play/simon/${next}`) : undefined}
         onHome={() => navigate('/')}
         analytics={<GameAnalyticsButton gameId="simon" />}
+        reducedMotion={settings.reducedMotion}
       />
     </AppShell>
   );

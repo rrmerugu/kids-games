@@ -15,6 +15,7 @@ export {
   type FeedbackState,
 } from './Buddy.js';
 export { BuddyPanel, type BuddyPanelProps } from './BuddyPanel.js';
+export { Confetti, type ConfettiProps } from './Confetti.js';
 export { MessageFeed, type MessageFeedProps } from './MessageFeed.js';
 export { Starfield } from './Starfield.js';
 export { GameLayout, type GameLayoutProps } from './GameLayout.js';

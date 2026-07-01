@@ -289,6 +289,7 @@ export function WordTypingScreen({ level }: { level: number }): React.JSX.Elemen
         onNext={next ? () => navigate(`/play/word-typing/${next}`) : undefined}
         onHome={() => navigate('/')}
         analytics={<GameAnalyticsButton gameId="word-typing" />}
+        reducedMotion={settings.reducedMotion}
       />
     </AppShell>
   );

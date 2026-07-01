@@ -207,6 +207,7 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
         onNext={next ? () => navigate(`/play/keyboard/${next}`) : undefined}
         onHome={() => navigate('/')}
         analytics={<GameAnalyticsButton gameId="keyboard" />}
+        reducedMotion={settings.reducedMotion}
       />
     </AppShell>
   );

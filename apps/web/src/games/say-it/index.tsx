@@ -231,6 +231,7 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
         onNext={next ? () => navigate(`/play/say-it/${next}`) : undefined}
         onHome={() => navigate('/')}
         analytics={<GameAnalyticsButton gameId="say-it" />}
+        reducedMotion={settings.reducedMotion}
       />
     </AppShell>
   );

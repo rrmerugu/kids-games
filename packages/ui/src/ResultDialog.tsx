@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@invana/ui';
 import { formatDuration, stickerById } from '@kids/gamification';
+import { Confetti } from './Confetti.js';
 import { GlossyButton } from './GlossyButton.js';
 import { StarRating } from './StarRating.js';
 
@@ -18,6 +19,8 @@ export interface ResultDialogProps {
   onHome: () => void;
   /** Per-game analytics control, shown top-right (e.g. <GameAnalyticsButton/>). */
   analytics?: ReactNode;
+  /** Suppress the winning confetti celebration for motion-sensitive players. */
+  reducedMotion?: boolean;
 }
 
 /** End-of-round celebration (or gentle retry prompt on a loss). */
@@ -31,9 +34,12 @@ export function ResultDialog({
   onNext,
   onHome,
   analytics,
+  reducedMotion,
 }: ResultDialogProps): React.JSX.Element {
   return (
     <Dialog open={open}>
+      {/* Full-screen confetti rains down to celebrate completing the level. */}
+      <Confetti trigger={open && won ? 1 : null} variant="rain" fullscreen reducedMotion={reducedMotion} />
       {/* Force dark theme to match the space game scene, and hide the (non-functional)
           built-in close button via the direct-child-button selector. */}
       <DialogContent className="dark rounded-3xl text-center sm:max-w-sm [&>button]:hidden">
