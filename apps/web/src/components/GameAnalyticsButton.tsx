@@ -1,13 +1,36 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { BarChart3, X } from 'lucide-react';
+import {
+  BarChart3,
+  Check,
+  Circle,
+  Gamepad2,
+  Keyboard,
+  Layers,
+  type LucideIcon,
+  MessageCircle,
+  Mic,
+  Palette,
+  Star,
+  X,
+  Zap,
+} from 'lucide-react';
 import type { GameId } from '@kids/game-core';
 import { actionLabel, computeActionStats, computeStats, formatDuration } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { IconButton } from './IconButton.js';
 import { gameMeta } from '../games/registry.js';
 
-function Stat({ label, value }: { label: string; value: string }): React.JSX.Element {
+/** Lucide icon per action type (mirrors the labels in @kids/gamification). */
+const ACTION_ICONS: Record<string, LucideIcon> = {
+  tap: Palette,
+  type: Keyboard,
+  reply: MessageCircle,
+  say: Mic,
+  pair: Layers,
+};
+
+function Stat({ label, value }: { label: string; value: ReactNode }): React.JSX.Element {
   return (
     <div className="rounded-2xl bg-white/10 p-3 text-center ring-1 ring-white/15">
       <div className="text-2xl font-extrabold text-white">{value}</div>
@@ -57,15 +80,17 @@ export function GameAnalyticsButton({ gameId }: { gameId: GameId }): React.JSX.E
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between gap-2">
-              <h2 className="text-2xl font-extrabold">
-                {meta ? `${meta.emoji} ${meta.label}` : 'Game'} stats 📊
+              <h2 className="flex items-center gap-2 text-2xl font-extrabold">
+                <BarChart3 className="h-6 w-6 shrink-0 text-violet-300" strokeWidth={2.5} aria-hidden />
+                {meta ? `${meta.emoji} ${meta.label}` : 'Game'} stats
               </h2>
               <IconButton icon={X} label="Close" tone="slate" onClick={() => setOpen(false)} />
             </div>
 
             {stats.totalGames === 0 ? (
-              <p className="py-8 text-center text-white/70">
-                No rounds yet — play to see your stats! 🎮
+              <p className="flex items-center justify-center gap-2 py-8 text-center text-white/70">
+                No rounds yet — play to see your stats!
+                <Gamepad2 className="h-5 w-5 shrink-0" aria-hidden />
               </p>
             ) : (
               <div className="space-y-5">
@@ -75,7 +100,15 @@ export function GameAnalyticsButton({ gameId }: { gameId: GameId }): React.JSX.E
                   <Stat label="win rate" value={`${Math.round(stats.winRate * 100)}%`} />
                   <Stat label="avg time" value={formatDuration(stats.avgTimeMs)} />
                   <Stat label="tries" value={`${stats.totalRetries}`} />
-                  <Stat label="stars" value={`⭐${stats.totalStars}`} />
+                  <Stat
+                    label="stars"
+                    value={
+                      <span className="inline-flex items-center justify-center gap-1">
+                        <Star className="h-5 w-5 fill-amber-300 text-amber-300" aria-hidden />
+                        {stats.totalStars}
+                      </span>
+                    }
+                  />
                 </div>
 
                 {actionStats.length > 0 && (
@@ -84,20 +117,23 @@ export function GameAnalyticsButton({ gameId }: { gameId: GameId }): React.JSX.E
                       By action
                     </div>
                     {actionStats.map((a) => {
-                      const { icon, label } = actionLabel(a.type);
+                      const { label } = actionLabel(a.type);
+                      const ActionIcon = ACTION_ICONS[a.type] ?? Circle;
                       return (
                         <div
                           key={a.type}
                           className="flex items-center gap-2 rounded-2xl bg-white/5 px-3 py-2 ring-1 ring-white/10"
                         >
-                          <span className="text-xl" aria-hidden>{icon}</span>
+                          <ActionIcon className="h-5 w-5 shrink-0 text-white/80" strokeWidth={2.5} aria-hidden />
                           <span className="w-20 shrink-0 text-sm font-semibold">{label}</span>
-                          <span className="font-extrabold text-emerald-300">
-                            ✅ {Math.round(a.accuracy * 100)}%
+                          <span className="flex items-center gap-1 font-extrabold text-emerald-300">
+                            <Check className="h-4 w-4" strokeWidth={3} aria-hidden />
+                            {Math.round(a.accuracy * 100)}%
                           </span>
                           {a.avgMs > 0 && (
-                            <span className="ml-auto text-sm text-white/70">
-                              ⚡ {(a.avgMs / 1000).toFixed(1)}s
+                            <span className="ml-auto flex items-center gap-1 text-sm text-white/70">
+                              <Zap className="h-4 w-4" aria-hidden />
+                              {(a.avgMs / 1000).toFixed(1)}s
                             </span>
                           )}
                         </div>

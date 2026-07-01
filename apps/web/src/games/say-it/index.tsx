@@ -24,6 +24,7 @@ import {
 import { getLevel, nextLevel, type SayItLevel } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { NavIcons } from '../../components/NavIcons.js';
+import { HomeButton } from '../../components/HomeButton.js';
 import { GameAnalyticsButton } from '../../components/GameAnalyticsButton.js';
 
 interface Result {
@@ -189,7 +190,8 @@ export function SayItScreen({ level }: { level: number }): React.JSX.Element {
             onBack={() => navigate('/play/say-it')}
             onRestart={() => restartRef.current()}
             analytics={<GameAnalyticsButton gameId="say-it" />}
-            nav={<NavIcons />}
+            home={<HomeButton />}
+            nav={<NavIcons hideHome />}
           >
             <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
               {view.index}/{view.targets}

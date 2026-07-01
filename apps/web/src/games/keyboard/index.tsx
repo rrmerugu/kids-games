@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { Badge } from '@invana/ui';
 import { AppShell, GameHud, GameLayout, ResultDialog, Stopwatch, useFeedback } from '@kids/ui';
 import { NavIcons } from '../../components/NavIcons.js';
+import { HomeButton } from '../../components/HomeButton.js';
 import { GameAnalyticsButton } from '../../components/GameAnalyticsButton.js';
 import {
   GameCanvas,
@@ -182,7 +183,8 @@ export function KeyboardScreen({ level }: { level: number }): React.JSX.Element 
             onBack={() => navigate('/play/keyboard')}
             onRestart={() => restartRef.current()}
             analytics={<GameAnalyticsButton gameId="keyboard" />}
-            nav={<NavIcons />}
+            home={<HomeButton />}
+            nav={<NavIcons hideHome />}
           >
             <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
               {hud.index}/{hud.targets}

@@ -4,6 +4,11 @@ import { IconButton } from './IconButton.js';
 import { useProgress } from '@kids/storage';
 import { useResolvedTheme } from '../theme.js';
 
+export interface NavIconsProps {
+  /** Hide the Home button — used in the game HUD, where Home lives on the left. */
+  hideHome?: boolean;
+}
+
 /**
  * The global section switcher: a row of soft pastel Lucide-icon buttons (Home,
  * sound, theme, settings) shown in every screen's header / game HUD so a kid or
@@ -11,7 +16,7 @@ import { useResolvedTheme } from '../theme.js';
  * settings directly and navigates on its own. (The parent dashboard now lives
  * behind Settings; per-game analytics live in the game HUD.)
  */
-export function NavIcons(): React.JSX.Element {
+export function NavIcons({ hideHome }: NavIconsProps = {}): React.JSX.Element {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const sound = useProgress((s) => s.settings.sound);
@@ -21,7 +26,7 @@ export function NavIcons(): React.JSX.Element {
 
   return (
     <div className="flex gap-2">
-      {pathname !== '/' && (
+      {!hideHome && pathname !== '/' && (
         <IconButton icon={Home} label="Home" tone="emerald" onClick={() => navigate('/')} />
       )}
       <IconButton

@@ -33,6 +33,7 @@ import {
 import { getLevel, nextLevel, type SimonLevel } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { NavIcons } from '../../components/NavIcons.js';
+import { HomeButton } from '../../components/HomeButton.js';
 import { GameAnalyticsButton } from '../../components/GameAnalyticsButton.js';
 import { padColors } from '../../palette.js';
 
@@ -254,7 +255,8 @@ export function SimonScreen({ level }: { level: number }): React.JSX.Element {
             onBack={() => navigate('/play/simon')}
             onRestart={() => restartRef.current()}
             analytics={<GameAnalyticsButton gameId="simon" />}
-            nav={<NavIcons />}
+            home={<HomeButton />}
+            nav={<NavIcons hideHome />}
           >
             <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
               {hud.len}/{hud.target}

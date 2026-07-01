@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, Settings as SettingsIcon } from 'lucide-react';
 import { Button, Card, CardContent } from '@invana/ui';
 import { AppShell, BuddyPanel, JsonForm } from '@kids/ui';
-import { NavIcons } from '../components/NavIcons.js';
+import { ScreenHeader } from '../components/ScreenHeader.js';
 import { useProgress, type BuddyPosition, type ThemeMode } from '@kids/storage';
 import { SETTINGS_FIELDS } from '../settings/schema.js';
 
@@ -25,10 +25,14 @@ export function SettingsScreen(): React.JSX.Element {
   return (
     <AppShell
       header={
-        <>
-          <h1 className="text-2xl font-extrabold">Settings ⚙️</h1>
-          <NavIcons />
-        </>
+        <ScreenHeader
+          title={
+            <span className="inline-flex items-center gap-2">
+              Settings
+              <SettingsIcon className="h-6 w-6 shrink-0" strokeWidth={2.5} aria-hidden />
+            </span>
+          }
+        />
       }
     >
       <div className="mx-auto max-w-md p-6">

@@ -14,13 +14,15 @@ import {
   TableHeader,
   TableRow,
 } from '@invana/ui';
+import type { ReactNode } from 'react';
+import { BarChart3, Gamepad2, Lightbulb, Star } from 'lucide-react';
 import { AppShell } from '@kids/ui';
-import { NavIcons } from '../components/NavIcons.js';
+import { ScreenHeader } from '../components/ScreenHeader.js';
 import { computeStats, formatDuration } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { gameMeta } from '../games/registry.js';
 
-function StatCard({ label, value, hint }: { label: string; value: string; hint?: string }): React.JSX.Element {
+function StatCard({ label, value, hint }: { label: string; value: ReactNode; hint?: string }): React.JSX.Element {
   return (
     <Card className="rounded-2xl">
       <CardContent className="p-4">
@@ -44,17 +46,22 @@ export function ParentDashboard(): React.JSX.Element {
   return (
     <AppShell
       header={
-        <>
-          <h1 className="text-2xl font-extrabold">Parent Dashboard 📊</h1>
-          <NavIcons />
-        </>
+        <ScreenHeader
+          title={
+            <span className="inline-flex items-center gap-2">
+              Parent Dashboard
+              <BarChart3 className="h-6 w-6 shrink-0" strokeWidth={2.5} aria-hidden />
+            </span>
+          }
+        />
       }
     >
       <div className="mx-auto max-w-3xl space-y-6 overflow-y-auto p-6">
         {stats.totalGames === 0 ? (
           <Card className="rounded-2xl">
-            <CardContent className="p-8 text-center text-muted-foreground">
-              No games played yet. Come back after a few rounds! 🎮
+            <CardContent className="flex items-center justify-center gap-2 p-8 text-center text-muted-foreground">
+              No games played yet. Come back after a few rounds!
+              <Gamepad2 className="h-5 w-5 shrink-0" aria-hidden />
             </CardContent>
           </Card>
         ) : (
@@ -66,9 +73,25 @@ export function ParentDashboard(): React.JSX.Element {
               <StatCard label="Avg / game" value={formatDuration(stats.avgTimeMs)} hint="average speed" />
               <StatCard label="Total tries" value={`${stats.totalRetries}`} hint={`${stats.avgRetries.toFixed(1)} avg`} />
               <StatCard label="Max tries (1 game)" value={`${stats.maxRetries}`} />
-              <StatCard label="Hints used" value={`💡 ${stats.totalHints}`} />
+              <StatCard
+                label="Hints used"
+                value={
+                  <span className="inline-flex items-center gap-1.5">
+                    <Lightbulb className="h-5 w-5 shrink-0 text-amber-500" aria-hidden />
+                    {stats.totalHints}
+                  </span>
+                }
+              />
               <StatCard label="Not finished" value={`${stats.abandoned}`} hint={`of ${stats.started} started`} />
-              <StatCard label="Stars earned" value={`⭐ ${stats.totalStars}`} />
+              <StatCard
+                label="Stars earned"
+                value={
+                  <span className="inline-flex items-center gap-1.5">
+                    <Star className="h-5 w-5 shrink-0 fill-amber-400 text-amber-400" aria-hidden />
+                    {stats.totalStars}
+                  </span>
+                }
+              />
             </div>
 
             <Card className="rounded-2xl">
@@ -130,15 +153,30 @@ export function ParentDashboard(): React.JSX.Element {
                   const meta = gameMeta(s.gameId);
                   return (
                     <div key={s.id} className="flex items-center justify-between gap-2 text-sm">
-                      <span className="font-semibold">
-                        {meta ? meta.emoji : '🎮'} {meta?.label ?? s.gameId} · L{s.level}
+                      <span className="flex items-center gap-1.5 font-semibold">
+                        {meta ? (
+                          <span aria-hidden>{meta.emoji}</span>
+                        ) : (
+                          <Gamepad2 className="h-4 w-4 shrink-0" aria-hidden />
+                        )}
+                        {meta?.label ?? s.gameId} · L{s.level}
                       </span>
                       <span className="flex items-center gap-2 text-muted-foreground">
                         <span>{formatDuration(s.durationMs)}</span>
                         <span>{s.retries} tries</span>
-                        <span>💡 {s.hints ?? 0}</span>
+                        <span className="flex items-center gap-1">
+                          <Lightbulb className="h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
+                          {s.hints ?? 0}
+                        </span>
                         <Badge variant={s.won ? 'default' : 'secondary'}>
-                          {s.won ? `⭐${s.stars}` : 'lost'}
+                          {s.won ? (
+                            <span className="flex items-center gap-1">
+                              <Star className="h-3.5 w-3.5 fill-current" aria-hidden />
+                              {s.stars}
+                            </span>
+                          ) : (
+                            'lost'
+                          )}
                         </Badge>
                       </span>
                     </div>

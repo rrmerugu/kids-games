@@ -14,6 +14,7 @@ import {
 import { getLevel, nextLevel, type SayHelloLevel } from '@kids/gamification';
 import { useProgress } from '@kids/storage';
 import { NavIcons } from '../../components/NavIcons.js';
+import { HomeButton } from '../../components/HomeButton.js';
 import { GameAnalyticsButton } from '../../components/GameAnalyticsButton.js';
 
 interface Result {
@@ -145,7 +146,8 @@ export function SayHelloScreen({ level }: { level: number }): React.JSX.Element 
             onBack={() => navigate('/play/say-hello')}
             onRestart={setup}
             analytics={<GameAnalyticsButton gameId="say-hello" />}
-            nav={<NavIcons />}
+            home={<HomeButton />}
+            nav={<NavIcons hideHome />}
           >
             <Badge variant="secondary" className="px-3 py-1.5 text-lg shadow">
               {turnKey >= 0 ? turnKey : 0}/{state?.prompts.length ?? def.targets}
