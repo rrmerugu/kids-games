@@ -36,7 +36,7 @@ export function ResultDialog({
     <Dialog open={open}>
       {/* Force dark theme to match the space game scene, and hide the (non-functional)
           built-in close button via the direct-child-button selector. */}
-      <DialogContent className="dark relative rounded-3xl text-center sm:max-w-sm [&>button]:hidden">
+      <DialogContent className="dark rounded-3xl text-center sm:max-w-sm [&>button]:hidden">
 
         {analytics && <div className="absolute right-4 top-4">{analytics}</div>}
 
