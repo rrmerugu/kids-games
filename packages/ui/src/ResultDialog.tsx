@@ -95,14 +95,15 @@ export function ResultDialog({
             )}
           </div>
 
-          {/* Right column — big icon+word buttons (Enter = Next). */}
+          {/* Right column — big icon+word buttons. "Next" is the primary action
+              (also fired by Enter), so it's noticeably larger with more padding. */}
           <div className="flex flex-col gap-2">
             {won && onNext && (
               <GlossyButton
-                icon="▶️"
+                icon={<span className="text-4xl">▶️</span>}
                 label="Next"
                 color="emerald"
-                className="h-14 w-full justify-center text-xl"
+                className="mb-1 h-20 w-full justify-center gap-3 py-4 text-3xl"
                 onClick={onNext}
               />
             )}
