@@ -23,7 +23,18 @@ export interface GameSettings {
   buddyPosition: BuddyPosition;
   /** Light / dark / follow-system theme. */
   theme: ThemeMode;
+  /**
+   * How long each round should last, in seconds. Longer rounds add more
+   * questions/targets (see `scaleLevelForDuration`). Kept within
+   * `[GAME_LENGTH_MIN_SEC, GAME_LENGTH_MAX_SEC]`.
+   */
+  gameLengthSec: number;
 }
+
+/** Bounds + default for the {@link GameSettings.gameLengthSec} slider. */
+export const GAME_LENGTH_MIN_SEC = 60;
+export const GAME_LENGTH_MAX_SEC = 300;
+export const GAME_LENGTH_DEFAULT_SEC = 120;
 
 /** The persisted shape (version 1). */
 export interface ProgressData {
@@ -47,6 +58,7 @@ export const DEFAULT_PROGRESS: ProgressData = {
     palette: 'classic',
     buddyPosition: 'right',
     theme: 'system',
+    gameLengthSec: GAME_LENGTH_DEFAULT_SEC,
   },
   bestStars: {
     'memory-match': {},

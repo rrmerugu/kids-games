@@ -3,8 +3,22 @@ import { BarChart3, Settings as SettingsIcon } from 'lucide-react';
 import { Button, Card, CardContent } from '@invana/ui';
 import { AppShell, BuddyPanel, JsonForm } from '@kids/ui';
 import { ScreenHeader } from '../components/ScreenHeader.js';
-import { useProgress, type BuddyPosition, type ThemeMode } from '@kids/storage';
+import {
+  GAME_LENGTH_MAX_SEC,
+  GAME_LENGTH_MIN_SEC,
+  useProgress,
+  type BuddyPosition,
+  type ThemeMode,
+} from '@kids/storage';
 import { SETTINGS_FIELDS } from '../settings/schema.js';
+
+/** Show a round length as a friendly "2 min" / "2½ min" label. */
+function formatLength(sec: number): string {
+  const half = Math.round((sec / 60) * 2) / 2;
+  const whole = Math.floor(half);
+  const frac = half - whole > 0 ? '½' : '';
+  return `${whole || ''}${frac || (whole ? '' : '0')} min`;
+}
 
 const BUDDY_POSITIONS: readonly BuddyPosition[] = ['right', 'left', 'off'];
 const THEMES: readonly ThemeMode[] = ['system', 'light', 'dark'];
@@ -36,6 +50,31 @@ export function SettingsScreen(): React.JSX.Element {
       }
     >
       <div className="mx-auto max-w-md p-6">
+        <Card className="mb-6 rounded-3xl">
+          <CardContent className="p-6">
+            <label htmlFor="game-length" className="flex items-baseline justify-between">
+              <span className="text-lg font-semibold">Game length ⏱</span>
+              <span className="text-xl font-extrabold text-indigo-500 dark:text-indigo-300">
+                {formatLength(settings.gameLengthSec)}
+              </span>
+            </label>
+            <input
+              id="game-length"
+              type="range"
+              min={GAME_LENGTH_MIN_SEC}
+              max={GAME_LENGTH_MAX_SEC}
+              step={15}
+              value={settings.gameLengthSec}
+              onChange={(e) => setSetting('gameLengthSec', Number(e.target.value))}
+              className="mt-3 h-3 w-full cursor-pointer appearance-none rounded-full bg-indigo-100 accent-indigo-500 dark:bg-slate-700"
+            />
+            <div className="mt-1 flex justify-between text-xs font-semibold text-slate-400">
+              <span>Shorter 🐢</span>
+              <span>Longer 🚀</span>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="rounded-3xl">
           <CardContent className="p-6">
             <JsonForm

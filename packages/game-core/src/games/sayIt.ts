@@ -13,7 +13,7 @@
  * never-punishing star bonus).
  */
 import type { Rng } from '../rng.js';
-import { pickMany } from '../rng.js';
+import { sampleNoRepeat } from '../rng.js';
 
 /** One thing to say — a picture (emoji) and the word it names. */
 export interface SpeakItem {
@@ -50,10 +50,12 @@ export type SayItOutcome =
 
 export function createSayItState(config: SayItConfig, rng: Rng): SayItState {
   return {
-    items: pickMany(config.items, config.targets, rng).map((it) => ({
-      word: it.word.toUpperCase(),
-      emoji: it.emoji,
-    })),
+    items: sampleNoRepeat(config.items, config.targets, rng, (it) => it.word.toUpperCase()).map(
+      (it) => ({
+        word: it.word.toUpperCase(),
+        emoji: it.emoji,
+      }),
+    ),
     index: 0,
     repeats: 0,
     phase: 'speak',

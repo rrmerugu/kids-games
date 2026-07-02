@@ -28,7 +28,8 @@ import {
   type Rng,
   type RoundResult,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type FeedMonsterLevel } from '@kids/gamification';
+import { nextLevel, type FeedMonsterLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 
 interface Result {
@@ -51,7 +52,7 @@ const foodWord = (cat: string): string => FOOD_WORDS[cat] ?? cat.toLowerCase();
 
 export function FeedMonsterScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('feed-monster', level) as FeedMonsterLevel | undefined;
+  const def = useGameLevel('feed-monster', level) as FeedMonsterLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

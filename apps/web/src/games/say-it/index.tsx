@@ -21,7 +21,8 @@ import {
   type RoundResult,
   type SayItState,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type SayItLevel } from '@kids/gamification';
+import { nextLevel, type SayItLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 import { NavIcons } from '../../components/NavIcons.js';
 import { HomeButton } from '../../components/HomeButton.js';
@@ -40,7 +41,7 @@ const CARD_BORDER = 0xf59e0b;
 
 export function SayItScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('say-it', level) as SayItLevel | undefined;
+  const def = useGameLevel('say-it', level) as SayItLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

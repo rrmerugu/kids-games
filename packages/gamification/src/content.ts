@@ -81,14 +81,20 @@ export const FEED_ANIMAL_VEHICLE: readonly FeedItem[] = [
 export const WORDS_EASY = [
   'CAT', 'DOG', 'SUN', 'HAT', 'BUS', 'COW', 'PIG', 'BED',
   'CUP', 'BOX', 'FOX', 'EGG', 'BEE', 'CAR', 'PEN', 'BAG',
+  'ANT', 'BAT', 'OWL', 'HEN', 'RAT', 'WEB', 'NET', 'JAR',
+  'MUG', 'POT', 'FAN', 'MAP', 'KEY', 'TOP', 'LEG', 'JAM',
 ] as const;
 export const WORDS_MID = [
   'FISH', 'BIRD', 'FROG', 'DUCK', 'CAKE', 'MILK', 'BALL', 'TREE',
   'STAR', 'MOON', 'BOOK', 'SHOE', 'HAND', 'DOOR', 'RAIN', 'BOAT',
+  'LION', 'BEAR', 'GOAT', 'WOLF', 'DEER', 'CRAB', 'SEAL', 'SNOW',
+  'LEAF', 'KITE', 'DRUM', 'BELL', 'LAMP', 'RING', 'SOCK', 'CORN',
 ] as const;
 export const WORDS_HARD = [
   'APPLE', 'TIGER', 'HORSE', 'TRAIN', 'HOUSE', 'GRASS', 'CLOUD', 'PLANT',
   'SNAKE', 'BREAD', 'CHAIR', 'SMILE', 'BEACH', 'MOUSE', 'ROBOT', 'HONEY',
+  'ZEBRA', 'PANDA', 'KOALA', 'SHEEP', 'GOOSE', 'WHALE', 'EAGLE', 'LEMON',
+  'MANGO', 'TRUCK', 'PLANE', 'CROWN', 'CLOCK', 'SPOON', 'DRESS', 'BRICK',
 ] as const;
 
 /* ---------------------------------------------------------------------------
@@ -101,6 +107,10 @@ export const SAY_IT_EASY: readonly SpeakItem[] = [
   { word: 'COW', emoji: '🐮' }, { word: 'PIG', emoji: '🐷' }, { word: 'BEE', emoji: '🐝' },
   { word: 'FOX', emoji: '🦊' }, { word: 'CAR', emoji: '🚗' }, { word: 'BUS', emoji: '🚌' },
   { word: 'HAT', emoji: '🎩' }, { word: 'CUP', emoji: '🥤' }, { word: 'EGG', emoji: '🥚' },
+  { word: 'ANT', emoji: '🐜' }, { word: 'BAT', emoji: '🦇' }, { word: 'OWL', emoji: '🦉' },
+  { word: 'HEN', emoji: '🐔' }, { word: 'RAT', emoji: '🐀' }, { word: 'KEY', emoji: '🔑' },
+  { word: 'MAP', emoji: '🗺️' }, { word: 'FAN', emoji: '🪭' }, { word: 'POT', emoji: '🍲' },
+  { word: 'BED', emoji: '🛏️' }, { word: 'BAG', emoji: '🎒' }, { word: 'PEN', emoji: '🖊️' },
 ];
 
 export const SAY_IT_MID: readonly SpeakItem[] = [
@@ -108,6 +118,10 @@ export const SAY_IT_MID: readonly SpeakItem[] = [
   { word: 'DUCK', emoji: '🦆' }, { word: 'CAKE', emoji: '🍰' }, { word: 'MILK', emoji: '🥛' },
   { word: 'BALL', emoji: '⚽' }, { word: 'TREE', emoji: '🌳' }, { word: 'STAR', emoji: '⭐' },
   { word: 'MOON', emoji: '🌙' }, { word: 'BOOK', emoji: '📖' }, { word: 'SHOE', emoji: '👟' },
+  { word: 'LION', emoji: '🦁' }, { word: 'BEAR', emoji: '🐻' }, { word: 'GOAT', emoji: '🐐' },
+  { word: 'CRAB', emoji: '🦀' }, { word: 'SEAL', emoji: '🦭' }, { word: 'LEAF', emoji: '🍃' },
+  { word: 'KITE', emoji: '🪁' }, { word: 'DRUM', emoji: '🥁' }, { word: 'BELL', emoji: '🔔' },
+  { word: 'LAMP', emoji: '💡' }, { word: 'SOCK', emoji: '🧦' }, { word: 'CORN', emoji: '🌽' },
 ];
 
 export const SAY_IT_HARD: readonly SpeakItem[] = [
@@ -115,6 +129,10 @@ export const SAY_IT_HARD: readonly SpeakItem[] = [
   { word: 'TRAIN', emoji: '🚆' }, { word: 'HOUSE', emoji: '🏠' }, { word: 'SNAKE', emoji: '🐍' },
   { word: 'BREAD', emoji: '🍞' }, { word: 'MOUSE', emoji: '🐭' }, { word: 'ROBOT', emoji: '🤖' },
   { word: 'HONEY', emoji: '🍯' }, { word: 'PANDA', emoji: '🐼' }, { word: 'LEMON', emoji: '🍋' },
+  { word: 'ZEBRA', emoji: '🦓' }, { word: 'KOALA', emoji: '🐨' }, { word: 'SHEEP', emoji: '🐑' },
+  { word: 'WHALE', emoji: '🐳' }, { word: 'EAGLE', emoji: '🦅' }, { word: 'MANGO', emoji: '🥭' },
+  { word: 'TRUCK', emoji: '🚚' }, { word: 'PLANE', emoji: '✈️' }, { word: 'CLOCK', emoji: '🕐' },
+  { word: 'CROWN', emoji: '👑' }, { word: 'SPOON', emoji: '🥄' }, { word: 'CANDY', emoji: '🍬' },
 ];
 
 /* ---------------------------------------------------------------------------

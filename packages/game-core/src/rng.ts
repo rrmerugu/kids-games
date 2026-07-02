@@ -46,3 +46,35 @@ export function pick<T>(items: readonly T[], rng: Rng): T {
 export function pickMany<T>(items: readonly T[], count: number, rng: Rng): T[] {
   return Array.from({ length: count }, () => pick(items, rng));
 }
+
+/**
+ * Draw `count` elements while avoiding repeats: within one pass through the pool
+ * every element is unique (a shuffle), and when `count` exceeds the pool we
+ * reshuffle and continue — never repeating an element back-to-back across the
+ * seam. So a round shows as much variety as the pool allows and never the same
+ * word twice in a row. `keyOf` compares items (default: the item itself), so
+ * object pools (e.g. `{ word, emoji }`) can dedupe on a field.
+ */
+export function sampleNoRepeat<T>(
+  items: readonly T[],
+  count: number,
+  rng: Rng,
+  keyOf: (item: T) => unknown = (item) => item,
+): T[] {
+  if (items.length === 0 || count <= 0) return [];
+  const out: T[] = [];
+  while (out.length < count) {
+    const block = shuffle(items, rng);
+    // Don't let the new block start with the same item the last one ended on.
+    const last = out[out.length - 1];
+    if (last !== undefined && block.length > 1 && keyOf(block[0]!) === keyOf(last)) {
+      const swap = block.findIndex((it) => keyOf(it) !== keyOf(block[0]!));
+      if (swap > 0) [block[0], block[swap]] = [block[swap]!, block[0]!];
+    }
+    for (const it of block) {
+      if (out.length >= count) break;
+      out.push(it);
+    }
+  }
+  return out;
+}

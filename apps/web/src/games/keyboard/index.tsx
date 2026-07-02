@@ -23,7 +23,8 @@ import {
   type KeyboardState,
   type RoundResult,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type KeyboardLevel } from '@kids/gamification';
+import { nextLevel, type KeyboardLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 
 interface Result {
@@ -37,7 +38,7 @@ const TARGET_FILL = 0x38bdf8;
 
 export function KeyboardScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('keyboard', level) as KeyboardLevel | undefined;
+  const def = useGameLevel('keyboard', level) as KeyboardLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

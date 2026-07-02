@@ -28,7 +28,8 @@ import {
   type Rng,
   type RoundResult,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type ColorSplashLevel } from '@kids/gamification';
+import { nextLevel, type ColorSplashLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 
 interface Result {
@@ -40,7 +41,7 @@ interface Result {
 
 export function ColorSplashScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('color-splash', level) as ColorSplashLevel | undefined;
+  const def = useGameLevel('color-splash', level) as ColorSplashLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

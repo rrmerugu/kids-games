@@ -28,7 +28,8 @@ import {
   type Rng,
   type RoundResult,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type CountingBalloonsLevel } from '@kids/gamification';
+import { nextLevel, type CountingBalloonsLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 
 interface Result {
@@ -42,7 +43,7 @@ const BALLOON_FILLS = [0xef4444, 0x3b82f6, 0x22c55e, 0xeab308, 0xa855f7, 0xf9731
 
 export function CountingBalloonsScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('counting-balloons', level) as CountingBalloonsLevel | undefined;
+  const def = useGameLevel('counting-balloons', level) as CountingBalloonsLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

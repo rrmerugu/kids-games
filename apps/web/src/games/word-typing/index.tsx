@@ -21,7 +21,8 @@ import {
   type RoundResult,
   type WordTypingState,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type WordTypingLevel } from '@kids/gamification';
+import { nextLevel, type WordTypingLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 import { NavIcons } from '../../components/NavIcons.js';
 import { HomeButton } from '../../components/HomeButton.js';
@@ -51,7 +52,7 @@ const DONE_BORDER = 0x16a34a;
 
 export function WordTypingScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('word-typing', level) as WordTypingLevel | undefined;
+  const def = useGameLevel('word-typing', level) as WordTypingLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

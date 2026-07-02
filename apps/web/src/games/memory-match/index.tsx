@@ -21,7 +21,8 @@ import {
   type MemoryMatchState,
   type RoundResult,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type MemoryMatchLevel } from '@kids/gamification';
+import { nextLevel, type MemoryMatchLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 import {
   BORDER_HINT,
@@ -41,7 +42,7 @@ interface Result {
 
 export function MemoryMatchScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('memory-match', level) as MemoryMatchLevel | undefined;
+  const def = useGameLevel('memory-match', level) as MemoryMatchLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, child, win, help, clear, summary } = useFeedback();
 

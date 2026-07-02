@@ -13,6 +13,9 @@ import { newlyEarned, starsFor, type Stars } from '@kids/gamification';
 import type { BestStars } from '@kids/gamification';
 import {
   DEFAULT_PROGRESS,
+  GAME_LENGTH_DEFAULT_SEC,
+  GAME_LENGTH_MAX_SEC,
+  GAME_LENGTH_MIN_SEC,
   type BuddyPosition,
   type GameSettings,
   type Profile,
@@ -114,6 +117,17 @@ export const useProgress = create<ProgressStore>()(
         const settings: GameSettings = { ...current.settings, ...(p.settings ?? {}) };
         if (!BUDDY_POSITIONS.includes(settings.buddyPosition)) settings.buddyPosition = 'right';
         if (!THEMES.includes(settings.theme)) settings.theme = 'system';
+        if (
+          typeof settings.gameLengthSec !== 'number' ||
+          !Number.isFinite(settings.gameLengthSec)
+        ) {
+          settings.gameLengthSec = GAME_LENGTH_DEFAULT_SEC;
+        } else {
+          settings.gameLengthSec = Math.min(
+            GAME_LENGTH_MAX_SEC,
+            Math.max(GAME_LENGTH_MIN_SEC, Math.round(settings.gameLengthSec)),
+          );
+        }
         return {
           ...current,
           ...p,

@@ -246,6 +246,98 @@ export const LEVELS: Record<GameId, readonly LevelDef[]> = {
   ),
 };
 
+/**
+ * Roughly how many seconds a 5–10 year-old spends per "question" in each game
+ * (one correct action: a tap, a typed letter, a matched pair, a Simon step).
+ * Used to turn the player's chosen round length into a question count so every
+ * round lasts about as long as they asked for — see {@link scaleLevelForDuration}.
+ */
+const SECONDS_PER_QUESTION: Record<GameId, number> = {
+  'memory-match': 12, // finding a pair takes two flips + thinking
+  simon: 11, // each extra step replays the whole growing sequence
+  keyboard: 3, // hunt-and-peck a single letter
+  'word-typing': 9, // spell a short word
+  'say-it': 7, // look, listen, repeat one picture-word
+  'say-hello': 9, // a full listen-and-repeat conversation turn
+  'balloon-pop': 4,
+  'color-splash': 6,
+  'counting-balloons': 3, // per number popped in the 1→count sequence
+  'feed-monster': 4,
+  'bubble-math': 7, // read + solve a small sum
+  'falling-letters': 4,
+};
+
+/**
+ * The most questions we ever pack into a single round, per game. Caps keep long
+ * rounds from turning into an exhausting wall (e.g. a 30-pair memory board) while
+ * still honouring the player's chosen length for the faster games.
+ */
+const MAX_QUESTIONS: Record<GameId, number> = {
+  'memory-match': 10,
+  simon: 16,
+  keyboard: 45,
+  'word-typing': 22,
+  'say-it': 24,
+  'say-hello': 18,
+  'balloon-pop': 45,
+  'color-splash': 32,
+  'counting-balloons': 8, // scales `rounds`, not `count`
+  'feed-monster': 45,
+  'bubble-math': 32,
+  'falling-letters': 45,
+};
+
+function clampCount(gameId: GameId, seconds: number, floor: number): number {
+  const wanted = Math.round(seconds / SECONDS_PER_QUESTION[gameId]);
+  return Math.min(MAX_QUESTIONS[gameId], Math.max(floor, wanted));
+}
+
+/**
+ * Stretch a level so a round lasts about `seconds` long by adding more questions
+ * — the difficulty knobs (operand size, letter pool, drift speed, board colours)
+ * stay exactly as the curve designed them; only the *count* of questions grows.
+ * Never drops below the level's designed count, so higher levels stay at least as
+ * long as intended. Returns a fresh object (safe to memoize on level + length).
+ */
+export function scaleLevelForDuration(def: LevelDef, seconds: number): LevelDef {
+  switch (def.kind) {
+    // Matching / recall games: the board size *is* the difficulty, so we never
+    // stretch them to fill the clock — a longer round would just mean a bigger,
+    // harder board. They keep their gentle curve (easy enough for a 3-year-old).
+    case 'memory-match':
+    case 'simon':
+      return def;
+    case 'keyboard':
+      return { ...def, targets: clampCount('keyboard', seconds, def.targets) };
+    case 'word-typing':
+      return { ...def, targets: clampCount('word-typing', seconds, def.targets) };
+    case 'say-it':
+      return { ...def, targets: clampCount('say-it', seconds, def.targets) };
+    case 'say-hello':
+      return { ...def, targets: clampCount('say-hello', seconds, def.targets) };
+    case 'balloon-pop':
+      return { ...def, targets: clampCount('balloon-pop', seconds, def.targets) };
+    case 'color-splash':
+      return { ...def, targets: clampCount('color-splash', seconds, def.targets) };
+    case 'counting-balloons': {
+      // Keep the 1→count sequence (that's the difficulty); repeat it more times.
+      const perRound = def.count * SECONDS_PER_QUESTION['counting-balloons'];
+      const wanted = Math.round(seconds / Math.max(1, perRound));
+      const rounds = Math.min(
+        MAX_QUESTIONS['counting-balloons'],
+        Math.max(def.rounds, wanted),
+      );
+      return { ...def, rounds };
+    }
+    case 'feed-monster':
+      return { ...def, targets: clampCount('feed-monster', seconds, def.targets) };
+    case 'bubble-math':
+      return { ...def, targets: clampCount('bubble-math', seconds, def.targets) };
+    case 'falling-letters':
+      return { ...def, targets: clampCount('falling-letters', seconds, def.targets) };
+  }
+}
+
 /** Number of levels a game has. */
 export function levelCount(gameId: GameId): number {
   return LEVELS[gameId].length;

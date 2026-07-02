@@ -30,7 +30,8 @@ import {
   type SimonState,
   type RoundResult,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type SimonLevel } from '@kids/gamification';
+import { nextLevel, type SimonLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 import { NavIcons } from '../../components/NavIcons.js';
 import { HomeButton } from '../../components/HomeButton.js';
@@ -55,7 +56,7 @@ const padView = (pad: number): { sq: string; word: string } => PAD_VIEW[pad % PA
 
 export function SimonScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('simon', level) as SimonLevel | undefined;
+  const def = useGameLevel('simon', level) as SimonLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

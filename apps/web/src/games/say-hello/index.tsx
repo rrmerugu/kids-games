@@ -11,7 +11,8 @@ import {
   type RoundResult,
   type SayHelloState,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type SayHelloLevel } from '@kids/gamification';
+import { nextLevel, type SayHelloLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 import { NavIcons } from '../../components/NavIcons.js';
 import { HomeButton } from '../../components/HomeButton.js';
@@ -26,7 +27,7 @@ interface Result {
 
 export function SayHelloScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('say-hello', level) as SayHelloLevel | undefined;
+  const def = useGameLevel('say-hello', level) as SayHelloLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

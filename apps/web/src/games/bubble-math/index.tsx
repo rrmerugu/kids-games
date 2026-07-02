@@ -29,7 +29,8 @@ import {
   type Rng,
   type RoundResult,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type BubbleMathLevel } from '@kids/gamification';
+import { nextLevel, type BubbleMathLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 
 interface Result {
@@ -44,7 +45,7 @@ const problemText = (p: MathProblem): string => `${p.a} ${p.op} ${p.b}`;
 
 export function BubbleMathScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('bubble-math', level) as BubbleMathLevel | undefined;
+  const def = useGameLevel('bubble-math', level) as BubbleMathLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

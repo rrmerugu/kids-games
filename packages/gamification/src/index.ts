@@ -1,4 +1,5 @@
 export * from './content.js';
+export * from './vocab.js';
 export * from './levels.js';
 export * from './scoring.js';
 export * from './progression.js';

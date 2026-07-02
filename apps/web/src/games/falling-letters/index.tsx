@@ -28,7 +28,8 @@ import {
   type Rng,
   type RoundResult,
 } from '@kids/game-core';
-import { getLevel, nextLevel, type FallingLettersLevel } from '@kids/gamification';
+import { nextLevel, type FallingLettersLevel } from '@kids/gamification';
+import { useGameLevel } from '../useGameLevel.js';
 import { useProgress } from '@kids/storage';
 
 interface Result {
@@ -42,7 +43,7 @@ const LETTER_FILLS = [0xf97316, 0x22c55e, 0x3b82f6, 0xa855f7, 0xef4444, 0x14b8a6
 
 export function FallingLettersScreen({ level }: { level: number }): React.JSX.Element {
   const navigate = useNavigate();
-  const def = getLevel('falling-letters', level) as FallingLettersLevel | undefined;
+  const def = useGameLevel('falling-letters', level) as FallingLettersLevel | undefined;
   const settings = useProgress((s) => s.settings);
   const { feedback, system, child, win, help, clear, summary } = useFeedback();
 

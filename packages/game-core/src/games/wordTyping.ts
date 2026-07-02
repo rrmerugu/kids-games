@@ -13,7 +13,7 @@
  * {@link normalizeKey} so `a` matches `A`.
  */
 import type { Rng } from '../rng.js';
-import { pickMany } from '../rng.js';
+import { sampleNoRepeat } from '../rng.js';
 import { normalizeKey } from './keyboardTrainer.js';
 
 export interface WordTypingConfig {
@@ -49,7 +49,9 @@ export type WordOutcome =
 
 export function createWordTypingState(config: WordTypingConfig, rng: Rng): WordTypingState {
   return {
-    words: pickMany(config.words, config.targets, rng).map((w) => w.toUpperCase()),
+    words: sampleNoRepeat(config.words, config.targets, rng, (w) => w.toUpperCase()).map((w) =>
+      w.toUpperCase(),
+    ),
     wordIndex: 0,
     letterIndex: 0,
     hits: 0,
