@@ -6,6 +6,12 @@ import { KeyboardScreen } from './keyboard/index.js';
 import { WordTypingScreen } from './word-typing/index.js';
 import { SayItScreen } from './say-it/index.js';
 import { SayHelloScreen } from './say-hello/index.js';
+import { BalloonPopScreen } from './balloon-pop/index.js';
+import { ColorSplashScreen } from './color-splash/index.js';
+import { CountingBalloonsScreen } from './counting-balloons/index.js';
+import { FeedMonsterScreen } from './feed-monster/index.js';
+import { BubbleMathScreen } from './bubble-math/index.js';
+import { FallingLettersScreen } from './falling-letters/index.js';
 
 /** Resolve `/play/:gameId/:level` to the matching game screen. */
 export function GameRoute(): React.JSX.Element {
@@ -30,6 +36,18 @@ export function GameRoute(): React.JSX.Element {
       return <SayItScreen key={key} level={lvl} />;
     case 'say-hello':
       return <SayHelloScreen key={key} level={lvl} />;
+    case 'balloon-pop':
+      return <BalloonPopScreen key={key} level={lvl} />;
+    case 'color-splash':
+      return <ColorSplashScreen key={key} level={lvl} />;
+    case 'counting-balloons':
+      return <CountingBalloonsScreen key={key} level={lvl} />;
+    case 'feed-monster':
+      return <FeedMonsterScreen key={key} level={lvl} />;
+    case 'bubble-math':
+      return <BubbleMathScreen key={key} level={lvl} />;
+    case 'falling-letters':
+      return <FallingLettersScreen key={key} level={lvl} />;
     default:
       return <Navigate to="/" replace />;
   }

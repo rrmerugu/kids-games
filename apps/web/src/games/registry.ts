@@ -68,6 +68,12 @@ export const GAMES: readonly GameMeta[] = [
   { id: 'word-typing', label: 'Words', emoji: '📝', category: 'Typing', color: 'bg-violet-400' },
   { id: 'say-it', label: 'Say It', emoji: '🗣️', category: 'Speaking', color: 'bg-amber-400' },
   { id: 'say-hello', label: 'Say Hello', emoji: '👋', category: 'Conversation', color: 'bg-teal-400' },
+  { id: 'balloon-pop', label: 'Balloons', emoji: '🎈', category: 'Aptitude', color: 'bg-fuchsia-400' },
+  { id: 'color-splash', label: 'Splash', emoji: '🎨', category: 'Aptitude', color: 'bg-pink-400' },
+  { id: 'counting-balloons', label: 'Counting', emoji: '🔢', category: 'Analytic', color: 'bg-cyan-400' },
+  { id: 'feed-monster', label: 'Feed', emoji: '🐲', category: 'Analytic', color: 'bg-lime-400' },
+  { id: 'bubble-math', label: 'Math', emoji: '➕', category: 'Analytic', color: 'bg-indigo-400' },
+  { id: 'falling-letters', label: 'Catch', emoji: '🪂', category: 'Typing', color: 'bg-orange-400' },
 ];
 
 export function gameMeta(id: string | undefined): GameMeta | undefined {

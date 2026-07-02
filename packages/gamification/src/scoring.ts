@@ -10,6 +10,8 @@
  * - word-typing:  `misses`, `letters` (total letters typed across the round)
  * - say-it:       (none) — a no-grading practice game; finishing is the win
  * - say-hello:    `misses`, `turns`
+ * - balloon-pop / color-splash / counting-balloons / feed-monster / bubble-math
+ *   / falling-letters: `misses`, `targets` (total correct taps to clear the round)
  */
 import type { RoundResult } from '@kids/game-core';
 
@@ -56,6 +58,20 @@ export function starsFor(result: RoundResult): Stars {
       const turns = result.metrics.turns ?? 1;
       if (misses === 0) return 3;
       if (misses <= Math.ceil(turns / 2)) return 2;
+      return 1;
+    }
+    // Gentle-motion arcade family — all score on `misses` vs `targets` (total
+    // correct taps needed): clean play → 3 stars, some slips → 2, many → 1.
+    case 'balloon-pop':
+    case 'color-splash':
+    case 'counting-balloons':
+    case 'feed-monster':
+    case 'bubble-math':
+    case 'falling-letters': {
+      const misses = result.metrics.misses ?? 0;
+      const targets = result.metrics.targets ?? 1;
+      if (misses === 0) return 3;
+      if (misses <= Math.ceil(targets / 2)) return 2;
       return 1;
     }
   }

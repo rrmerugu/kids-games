@@ -16,6 +16,63 @@ export const LETTERS_FULL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 /** Simon pad colours (hex, consumed by the engine as `fill`). */
 export const SIMON_PAD_COLORS = [0x22c55e, 0xef4444, 0x3b82f6, 0xeab308] as const;
 
+/* ---------------------------------------------------------------------------
+ * Gentle-motion arcade family (Balloon Pop, Color Splash, Counting Balloons,
+ * Feed the Monster, Bubble Math, Falling Letters). Balloons/bubbles carry a
+ * value the child taps; these pools are what the values are drawn from.
+ * ------------------------------------------------------------------------- */
+
+/** Number symbols (as one-character-friendly strings) for counting / recognition. */
+export const NUMBERS_1_10: readonly string[] = Array.from({ length: 10 }, (_, i) => String(i + 1));
+export const NUMBERS_1_20: readonly string[] = Array.from({ length: 20 }, (_, i) => String(i + 1));
+
+/** A named colour + its hex fill, for Color Splash and coloured balloons. */
+export interface ColorDef {
+  name: string;
+  hex: number;
+}
+export const COLORS: readonly ColorDef[] = [
+  { name: 'RED', hex: 0xef4444 },
+  { name: 'BLUE', hex: 0x3b82f6 },
+  { name: 'GREEN', hex: 0x22c55e },
+  { name: 'YELLOW', hex: 0xeab308 },
+  { name: 'PURPLE', hex: 0xa855f7 },
+  { name: 'ORANGE', hex: 0xf97316 },
+];
+
+/** An emoji item tagged with the category it belongs to, for Feed the Monster. */
+export interface FeedItem {
+  emoji: string;
+  category: string;
+}
+/** Easy axis: fruit vs vegetable. */
+export const FEED_FRUIT_VEG: readonly FeedItem[] = [
+  { emoji: '🍎', category: 'FRUIT' }, { emoji: '🍌', category: 'FRUIT' },
+  { emoji: '🍇', category: 'FRUIT' }, { emoji: '🍓', category: 'FRUIT' },
+  { emoji: '🍊', category: 'FRUIT' }, { emoji: '🍉', category: 'FRUIT' },
+  { emoji: '🥕', category: 'VEGGIE' }, { emoji: '🥦', category: 'VEGGIE' },
+  { emoji: '🌽', category: 'VEGGIE' }, { emoji: '🥔', category: 'VEGGIE' },
+  { emoji: '🍅', category: 'VEGGIE' }, { emoji: '🧅', category: 'VEGGIE' },
+];
+/** Mid axis: land animal vs sea animal. */
+export const FEED_LAND_SEA: readonly FeedItem[] = [
+  { emoji: '🐶', category: 'LAND' }, { emoji: '🐱', category: 'LAND' },
+  { emoji: '🦁', category: 'LAND' }, { emoji: '🐰', category: 'LAND' },
+  { emoji: '🐮', category: 'LAND' }, { emoji: '🐴', category: 'LAND' },
+  { emoji: '🐟', category: 'SEA' }, { emoji: '🐙', category: 'SEA' },
+  { emoji: '🦀', category: 'SEA' }, { emoji: '🐳', category: 'SEA' },
+  { emoji: '🐬', category: 'SEA' }, { emoji: '🦈', category: 'SEA' },
+];
+/** Hard axis: living animal vs vehicle. */
+export const FEED_ANIMAL_VEHICLE: readonly FeedItem[] = [
+  { emoji: '🐝', category: 'ANIMAL' }, { emoji: '🦋', category: 'ANIMAL' },
+  { emoji: '🐸', category: 'ANIMAL' }, { emoji: '🐢', category: 'ANIMAL' },
+  { emoji: '🦉', category: 'ANIMAL' }, { emoji: '🐘', category: 'ANIMAL' },
+  { emoji: '🚗', category: 'VEHICLE' }, { emoji: '🚌', category: 'VEHICLE' },
+  { emoji: '🚂', category: 'VEHICLE' }, { emoji: '✈️', category: 'VEHICLE' },
+  { emoji: '🚀', category: 'VEHICLE' }, { emoji: '🚲', category: 'VEHICLE' },
+];
+
 /**
  * Word lists the Word Typing game draws from, easiest → hardest. All uppercase
  * A–Z (no spaces or punctuation, so every character is one keypress). Chosen to

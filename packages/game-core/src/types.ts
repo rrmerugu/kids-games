@@ -5,7 +5,13 @@ export type GameId =
   | 'keyboard'
   | 'word-typing'
   | 'say-it'
-  | 'say-hello';
+  | 'say-hello'
+  | 'balloon-pop'
+  | 'color-splash'
+  | 'counting-balloons'
+  | 'feed-monster'
+  | 'bubble-math'
+  | 'falling-letters';
 
 /**
  * Per-action-type tally for a round, derived from the Buddy event timeline
